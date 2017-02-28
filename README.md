@@ -1,6 +1,9 @@
 # JSONToSwift
 Command Line Tool to Create Swift Model Objects from JSON
 
+## What this project aims to accomplish
+- Ability to point to a local JSON file, provide an object name and generate a swift model object
+
 ## License
     Copyright 2016 Brenden Konnagan
 
