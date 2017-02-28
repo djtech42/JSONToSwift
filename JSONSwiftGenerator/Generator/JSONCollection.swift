@@ -1,0 +1,107 @@
+//
+//  JSONCollection.swift
+//  JSONSwiftGenerator
+//
+//  Created by Brenden Konnagan on 2/28/17.
+//  Copyright © 2017 Bren. All rights reserved.
+//
+
+import Foundation
+
+struct JSONCollection<Element> {
+    fileprivate var contents: [String: Element] = [:]
+    
+    init(with key: String, element: Element) {
+        add(element, for: key)
+    }
+    
+    init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Element) {
+        for (key, value) in sequence {
+            add(value, for: key)
+        }
+    }
+}
+
+extension JSONCollection {
+    mutating func add(_ element: Element, for key: String) {
+        if !contents.contains(where: { $0.key == key }) {
+            contents[key] = element
+        }
+    }
+    
+    mutating func remove(_ key: String) {
+        precondition(contents.contains(where: { $0.key == key }), "Missing node with specified key: \(key)")
+        contents.removeValue(forKey: key)
+    }
+}
+
+extension JSONCollection: CustomStringConvertible {
+    var description: String {
+        return String(describing: contents)
+    }
+}
+
+extension JSONCollection: ExpressibleByDictionaryLiteral {
+    init(dictionaryLiteral elements: (String, Element)...) {
+        self.init(elements.map { (key: $0.0, value: $0.1) })
+    }
+}
+
+extension JSONCollection: Sequence {
+    typealias Iterator = AnyIterator<(value: Element, key: String)>
+    
+    func makeIterator() -> Iterator {
+        var existingIterator = contents.makeIterator()
+        return AnyIterator {
+            return existingIterator.next()
+        }
+    }
+}
+
+extension JSONCollection: Collection {
+    typealias Index = DictionaryIndex<String, Element>
+    
+    var startIndex: Index {
+        return contents.startIndex
+    }
+    
+    var endIndex: Index {
+        return contents.endIndex
+    }
+    
+    subscript (position: Index) -> Iterator.Element {
+        precondition(indices.contains(position), "Index out of bounds")
+        let dictionaryElement = contents[position]
+        return (key: dictionaryElement.key, value: dictionaryElement.value)
+    }
+    
+    func index(after i: Index) -> Index {
+        return contents.index(after: i)
+    }
+}
+
+extension JSONCollection {
+    var arrayItems: [(key: String, value: Element)] {
+        return contents.filter { $0.value is Array<Any> }
+    }
+    
+    var dictionaryItems: [(key: String, value: Element)] {
+        return contents.filter { $0.value is Dictionary<String, Any> }
+    }
+    
+    var stringItems: [(key: String, value: Element)] {
+        return contents.filter { $0.value is String }
+    }
+    
+    var numberItems: [(key: String, value: Element)] {
+        return contents.filter { $0.value is Double }
+    }
+    
+    var boolItems: [(key: String, value: Element)] {
+        return contents.filter { $0.value is Bool }
+    }
+    
+    var nullItems: [(key: String, value: Element)] {
+        return contents.filter { !($0.value is Array<Any>) && !($0.value is Dictionary<String, Any>) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
+    }
+}
