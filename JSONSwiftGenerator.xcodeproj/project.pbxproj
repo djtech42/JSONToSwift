@@ -15,6 +15,7 @@
 		263781AF1E65C97600BE6706 /* JSONInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263781AE1E65C97600BE6706 /* JSONInteractor.swift */; };
 		263781B11E65DC8900BE6706 /* JSONStringProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263781B01E65DC8900BE6706 /* JSONStringProvider.swift */; };
 		263781B31E65DE9C00BE6706 /* StringInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263781B21E65DE9C00BE6706 /* StringInteractor.swift */; };
+		26FAFDAA1E671B0600609139 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 26FAFDA91E671B0600609139 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +40,7 @@
 		263781AE1E65C97600BE6706 /* JSONInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONInteractor.swift; path = Generator/JSONInteractor.swift; sourceTree = "<group>"; };
 		263781B01E65DC8900BE6706 /* JSONStringProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONStringProvider.swift; path = Generator/JSONStringProvider.swift; sourceTree = "<group>"; };
 		263781B21E65DE9C00BE6706 /* StringInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringInteractor.swift; path = Generator/StringInteractor.swift; sourceTree = "<group>"; };
+		26FAFDA91E671B0600609139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 				263781A51E65C66100BE6706 /* IO */,
 				263781A41E65B7A400BE6706 /* Generator */,
 				2637819D1E65B71500BE6706 /* main.swift */,
+				26FAFDA91E671B0600609139 /* README.md */,
 			);
 			path = JSONSwiftGenerator;
 			sourceTree = "<group>";
@@ -164,6 +167,7 @@
 				263781B31E65DE9C00BE6706 /* StringInteractor.swift in Sources */,
 				263781AF1E65C97600BE6706 /* JSONInteractor.swift in Sources */,
 				263781A71E65C67500BE6706 /* IOWrapper.swift in Sources */,
+				26FAFDAA1E671B0600609139 /* README.md in Sources */,
 				263781A91E65C79400BE6706 /* JSONToSwiftError.swift in Sources */,
 				263781AD1E65C92700BE6706 /* JSONToSwift.swift in Sources */,
 			);
@@ -297,6 +301,7 @@
 				263781A31E65B71500BE6706 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

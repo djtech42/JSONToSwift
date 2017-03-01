@@ -4,6 +4,16 @@ Command Line Tool to Create Swift Model Objects from JSON
 ## What this project aims to accomplish
 - Ability to point to a local JSON file, provide an object name and generate a swift model object
 
+## How to use
+Clone respository and build using Xcode. Run the application target.
+
+You can also copy the application build product into ~/Usr/bin/local and access it via command line in the system.
+
+## Local JSON files
+1. Execute the JSONSwiftGenertor application from terminal
+2. Input(at prompt) path to local JSON file
+3. Input(at prompt) name of root object 
+
 ## License
     Copyright 2016 Brenden Konnagan
 
