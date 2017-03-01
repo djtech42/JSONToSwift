@@ -9,10 +9,17 @@
 import Foundation
 
 struct IOWrapper {
-    static func checkArguments() -> DataRouter {
+    static func checkArguments() -> DataRouter? {
         var enteredArguments = CommandLine.arguments
         //  Remove application argument
         enteredArguments.removeFirst()
+        
+        return route(from: enteredArguments)
+    }
+    
+    static func route(from arguments: [String]) -> DataRouter? {
+        var enteredArguments = arguments
+        
         guard enteredArguments.count > 0 else { return .none }
         let firstArgument = enteredArguments.removeFirst()
         guard let recognizedArgument = RecognizedArguments.recognized(from: firstArgument) else {
@@ -33,10 +40,10 @@ struct IOWrapper {
     
     static func getInputFile() -> DataRouter {
         print("Please enter path to JSON data")
-        guard let path = readLine(strippingNewline: true) else {
+        guard let path = readLine(strippingNewline: true), let existingRoute = route(from: [path]) else {
             return getInputFile()
         }
-        return DataRouter.file(location: URL(fileURLWithPath: path))
+        return existingRoute
     }
     
     static func getNameForObject() -> String {

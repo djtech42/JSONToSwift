@@ -9,7 +9,6 @@
 import Foundation
 
 enum DataRouter {
-    case none
     case file(location: URL)
     case url(location: URL)
     
@@ -17,7 +16,6 @@ enum DataRouter {
         switch self {
         case .file(let location): return location
         case .url(let location): return location
-        case .none: return .none
         }
     }
 }
@@ -25,9 +23,8 @@ enum DataRouter {
 extension DataRouter: Equatable {
     var value: Int {
         switch self {
-        case .none: return 0
-        case .file: return 1
-        case .url: return 2
+        case .file: return 0
+        case .url: return 1
         }
     }
     

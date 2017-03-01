@@ -16,7 +16,8 @@ struct LaunchRouter {
             try LaunchRouter.execute(with: inputFile)
             return
         }
-        try LaunchRouter.execute(with: argumentRouter)
+        guard let providedUrl = argumentRouter else { throw JSONToSwiftError(message: "No file path or URL provided") }
+        try LaunchRouter.execute(with: providedUrl)
     }
     
     fileprivate static func execute(with router: DataRouter) throws {
