@@ -37,7 +37,7 @@ extension JSONToSwift {
 
 extension JSONToSwift {
     fileprivate func string(from collection: JSONCollection<Any>) -> String {
-        var strings: [StringInteractor] = [.header, .newLine, .structName(string: rootObjectName)]
+        var strings: [StringInteractor] = [.header(remoteURL: jsonPath), .newLine, .structName(string: rootObjectName)]
         strings.append(.newLine)
         addPropertyStrings(in: &strings, from: collection)
         strings.append(.newLine)
