@@ -10,7 +10,7 @@ import Foundation
 
 struct LaunchRouter {
     static func run() throws {
-        let argumentRouter = Input.checkArguments()
+        let argumentRouter = Input.route(from: Input.flags)
         guard let providedUrl = argumentRouter else {
             let inputFile = Input.getFilePath()
             try LaunchRouter.execute(with: inputFile)
@@ -25,7 +25,14 @@ struct LaunchRouter {
             throw JSONToSwiftError(message: "Invalid URL provided")
         }
         let objectName = Input.getNameForObject()
-        let converter = JSONToSwift(with: location, rootObjectName: objectName)
+        let useEquatable: Bool
+        if RecognizedArguments.recognized(from: Input.flags).contains(.equatable) {
+            useEquatable = true
+        }
+        else {
+            useEquatable = Input.getUseEquatable()
+        }
+        let converter = JSONToSwift(with: location, rootObjectName: objectName, generateEquatable: useEquatable)
         try converter.convert()
     }
 }

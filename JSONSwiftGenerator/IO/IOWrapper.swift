@@ -9,12 +9,8 @@
 import Foundation
 
 struct Input {
-    static func checkArguments() -> DataRouter? {
-        var enteredArguments = CommandLine.arguments
-        //  Remove application argument
-        enteredArguments.removeFirst()
-        
-        return route(from: enteredArguments)
+    static var flags: [String] {
+        return Array(CommandLine.arguments.dropFirst())
     }
     
     static func getFilePath() -> DataRouter {
@@ -29,26 +25,22 @@ struct Input {
         print("Please enter name for root object")
         return readLine(strippingNewline: true) ?? ""
     }
+    
+    static func getUseEquatable() -> Bool {
+        print("Generate Equatable extension? (y/n)")
+        return readLine(strippingNewline: true)?.lowercased() == "y"
+    }
 }
 
 extension Input {
-    fileprivate static func route(from arguments: [String]) -> DataRouter? {
+    static func route(from arguments: [String]) -> DataRouter? {
         var enteredArguments = arguments
         
         guard enteredArguments.count > 0 else { return .none }
         let firstArgument = enteredArguments.removeFirst()
-        guard let recognizedArgument = RecognizedArguments.recognized(from: firstArgument) else {
-            if let url = URL(string: firstArgument) {
-                if url.host != nil { return .url(location: url) }
-                else { return .file(location: URL(fileURLWithPath: firstArgument)) }
-            }
-            return .none
-        }
-        if recognizedArgument == .url {
-            guard enteredArguments.count > 0 else { return .none }
-            let path = enteredArguments.removeFirst()
-            guard let url = URL(string: path) else { return .none }
-            return DataRouter.url(location: url)
+        if let url = URL(string: firstArgument) {
+            if url.host != nil { return .url(location: url) }
+            else { return .file(location: URL(fileURLWithPath: firstArgument)) }
         }
         return .none
     }
