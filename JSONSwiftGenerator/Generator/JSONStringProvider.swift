@@ -48,13 +48,15 @@ extension JSONStringProvider: CustomStringConvertible {
     }
     
     var comment: String {
+        let specificString: String
         switch self {
-        case .array: return "//    Array Objects"
-        case .dictionary: return "//    Dictionary Objects"
-        case .string: return "//    String Objects"
-        case .number: return "//    Number Objects"
-        case .bool: return "//    Bool Objects"
-        case .null: return "//    Null Objects"
+        case .array: specificString = "Array"
+        case .dictionary: specificString = "Dictionary"
+        case .string: specificString = "String"
+        case .number: specificString = "Number"
+        case .bool: specificString = "Bool"
+        case .null: specificString = "Null"
         }
+        return "//    \(specificString) Objects"
     }
 }
