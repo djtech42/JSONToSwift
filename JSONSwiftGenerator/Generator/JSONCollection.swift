@@ -81,6 +81,9 @@ extension JSONCollection: Collection {
 }
 
 extension JSONCollection {
+    var allItems: [String:Element] {
+        return contents
+    }
     var arrayItems: [(key: String, value: Element)] {
         return contents.filter { $0.value is Array<Any> }
     }
