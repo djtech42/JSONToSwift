@@ -13,7 +13,6 @@ struct Input {
         var enteredArguments = CommandLine.arguments
         //  Remove application argument
         enteredArguments.removeFirst()
-        
         return route(from: enteredArguments)
     }
     
