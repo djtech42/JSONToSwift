@@ -8,11 +8,9 @@
 
 import Foundation
 
-let sourcePath = IOWrapper.getInputFile()
-let rootObjectName = IOWrapper.getNameForObject()
-let jsonToSwift = JSONToSwift(with: sourcePath, rootObjectName: rootObjectName)
 do {
-    try jsonToSwift.convert()
+    try LaunchRouter.run()
 } catch {
-    print("Error! : \(String(describing: error))")
+    let errorString = String(describing: error)
+    print("*** Error: \(errorString)")
 }
