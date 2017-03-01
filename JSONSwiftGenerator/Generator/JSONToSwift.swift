@@ -55,9 +55,9 @@ extension JSONToSwift {
         addInitializerDelclarations(in: &strings, from: collection)
         strings.append(contentsOf: [.close, .newLine, .close, .newLine])
         strings.append(contentsOf: [.newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
-        for (index, key) in collection.allItems.keys.enumerated() {
+        for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
             strings.append(.equatableComparison(name: key))
-            if index < collection.allItems.count - 1 {
+            if index < collection.nonNullItems.count - 1 {
                 strings.append(.andOperator)
                 strings.append(.newLine)
             }
