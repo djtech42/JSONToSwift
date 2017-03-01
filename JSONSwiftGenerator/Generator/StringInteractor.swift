@@ -15,7 +15,7 @@ enum StringInteractor {
     case close
     case initializer
     case property(name: String, type: String)
-    case initProperty(name: String, type: String, defaultValue: String)
+    case initProperty(name: String, provider: JSONStringProvider)
     case comment(string: String)
 }
 
@@ -28,7 +28,7 @@ extension StringInteractor: CustomStringConvertible {
         case .close: return "}"
         case .initializer: return "init(with dictionary: [String: Any]) {"
         case .property(let name, let type): return "let \(name): \(type)"
-        case .initProperty(let name, let type, let defaultValue): return "self.\(name) = dictionary[\"\(name)\"] as? \(type) ?? \(defaultValue)"
+        case .initProperty(let name, let provider): return provider.defaultValue == nil ? "self.\(name) = dictionary[\"\(name)\"] as? \(provider.nullDefault!)" : "self.\(name) = dictionary[\"\(name)\"] as? \(provider.description) ?? \(provider.defaultValue!)"
         case .comment(let string): return string
         }
     }

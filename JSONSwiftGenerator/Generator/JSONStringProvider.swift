@@ -29,14 +29,21 @@ extension JSONStringProvider: CustomStringConvertible {
         }
     }
     
-    var defaultValue: String {
+    var defaultValue: String? {
         switch self {
         case .array: return "[]"
         case .dictionary: return "[:]"
         case .string: return "\"\""
         case .number: return "0.0"
         case .bool: return "false"
+        case .null: return .none
+        }
+    }
+    
+    var nullDefault: String? {
+        switch self {
         case .null: return "Any"
+        default: return .none
         }
     }
     
