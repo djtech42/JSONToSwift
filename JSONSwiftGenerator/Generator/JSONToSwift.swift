@@ -116,27 +116,27 @@ extension JSONToSwift {
     
     fileprivate func addInitializerDelclarations(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
         for array in collection.arrayItems {
-            strings.append(.initProperty(name: array.key, type: JSONStringProvider.array.description, defaultValue: JSONStringProvider.array.defaultValue))
+            strings.append(.initProperty(name: array.key, provider: JSONStringProvider.array))
             strings.append(.newLine)
         }
         for dictionary in collection.dictionaryItems {
-            strings.append(.initProperty(name: dictionary.key, type: JSONStringProvider.dictionary.description, defaultValue: JSONStringProvider.dictionary.defaultValue))
+            strings.append(.initProperty(name: dictionary.key, provider: JSONStringProvider.dictionary))
             strings.append(.newLine)
         }
         for string in collection.stringItems {
-            strings.append(.initProperty(name: string.key, type: JSONStringProvider.string.description, defaultValue: JSONStringProvider.string.defaultValue))
+            strings.append(.initProperty(name: string.key, provider: JSONStringProvider.string))
             strings.append(.newLine)
         }
         for number in collection.numberItems {
-            strings.append(.initProperty(name: number.key, type: JSONStringProvider.number.description, defaultValue: JSONStringProvider.number.defaultValue))
+            strings.append(.initProperty(name: number.key, provider: JSONStringProvider.number))
             strings.append(.newLine)
         }
         for bool in collection.boolItems {
-            strings.append(.initProperty(name: bool.key, type: JSONStringProvider.bool.description, defaultValue: JSONStringProvider.bool.defaultValue))
+            strings.append(.initProperty(name: bool.key, provider: JSONStringProvider.bool))
             strings.append(.newLine)
         }
         for null in collection.nullItems {
-            strings.append(.initProperty(name: null.key, type: JSONStringProvider.null.description, defaultValue: JSONStringProvider.null.defaultValue))
+            strings.append(.initProperty(name: null.key, provider: JSONStringProvider.null))
             strings.append(.newLine)
         }
     }
