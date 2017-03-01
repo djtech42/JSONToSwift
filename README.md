@@ -14,6 +14,11 @@ You can also copy the application build product into ~/Usr/bin/local and access 
 2. Input(at prompt) path to local JSON file
 3. Input(at prompt) name of root object 
 
+## Passing Arguments
+1. Execute the JSONSwiftGenertor with arguments on launch
+2. Explicitly pass `-u` flag for remote URL (optional)
+3. Pass URL for local or remote file location
+
 ## License
     Copyright 2016 Brenden Konnagan
 
