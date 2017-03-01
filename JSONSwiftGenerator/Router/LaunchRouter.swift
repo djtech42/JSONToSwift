@@ -10,20 +10,21 @@ import Foundation
 
 struct LaunchRouter {
     static func run() throws {
-        let argumentRouter = IOWrapper.checkArguments()
-        guard argumentRouter != .none else {
-            let inputFile = IOWrapper.getInputFile()
+        let argumentRouter = Input.checkArguments()
+        guard let providedUrl = argumentRouter else {
+            let inputFile = Input.getFilePath()
             try LaunchRouter.execute(with: inputFile)
             return
         }
-        try LaunchRouter.execute(with: argumentRouter)
+        
+        try LaunchRouter.execute(with: providedUrl)
     }
     
     fileprivate static func execute(with router: DataRouter) throws {
         guard let location = router.location else {
             throw JSONToSwiftError(message: "Invalid URL provided")
         }
-        let objectName = IOWrapper.getNameForObject()
+        let objectName = Input.getNameForObject()
         let converter = JSONToSwift(with: location, rootObjectName: objectName)
         try converter.convert()
     }

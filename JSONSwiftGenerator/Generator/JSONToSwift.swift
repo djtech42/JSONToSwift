@@ -21,8 +21,17 @@ struct JSONToSwift {
         let jsonData = try Data(contentsOf: jsonPath)
         let json = try JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers)
         let collection = try JSONInteractor.generateCollection(from: json)
+        
+        if collection.nullItems.count > 0 {
+            Output.printNewline()
+            Output.printCastWarning(for: collection.nullItems.map({ $0.key }))
+        }
+        
         let structString = string(from: collection)
         try writeToSwiftFile(string: structString)
+        
+        Output.printNewline()
+        Output.printThatFileIsWritten()
     }
 
     //  write string to file at path
