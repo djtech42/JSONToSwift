@@ -11,12 +11,12 @@ import Foundation
 struct LaunchRouter {
     static func run() throws {
         let argumentRouter = IOWrapper.checkArguments()
-        guard argumentRouter != .none else {
+        guard let providedUrl = argumentRouter else {
             let inputFile = IOWrapper.getInputFile()
             try LaunchRouter.execute(with: inputFile)
             return
         }
-        guard let providedUrl = argumentRouter else { throw JSONToSwiftError(message: "No file path or URL provided") }
+        
         try LaunchRouter.execute(with: providedUrl)
     }
     
