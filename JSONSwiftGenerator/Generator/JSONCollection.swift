@@ -81,6 +81,9 @@ extension JSONCollection: Collection {
 }
 
 extension JSONCollection {
+    var nonNullItems: [(key: String, value: Element)]  {
+        return contents.filter { $0.value is Array<Any> || $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool}
+    }
     var arrayItems: [(key: String, value: Element)] {
         return contents.filter { $0.value is Array<Any> }
     }
