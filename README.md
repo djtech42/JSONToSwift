@@ -12,7 +12,8 @@ You can also copy the application build product into ~/Usr/bin/local and access 
 ## Local JSON files
 1. Execute the JSONSwiftGenertor application from terminal
 2. Input(at prompt) path to local JSON file
-3. Input(at prompt) name of root object 
+3. Input(at prompt) name of root object
+4. Output swift file is written to ~/Users/.../Desktop/
 
 ## License
     Copyright 2016 Brenden Konnagan
