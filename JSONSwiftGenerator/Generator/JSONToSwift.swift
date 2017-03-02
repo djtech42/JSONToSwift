@@ -12,18 +12,23 @@ struct JSONToSwift {
     fileprivate let jsonPath: URL
     fileprivate let rootObjectName: String
     fileprivate let generateEquatable: Bool
+    let subObject: JSONCollection<Any>?
     
-    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool) {
+    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection<Any>? = .none) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
         self.generateEquatable = generateEquatable
+        self.subObject = subObject
     }
     
     func convert() throws {
         let jsonData = try Data(contentsOf: jsonPath)
         let json = try JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers)
         let collection = try JSONInteractor.generateCollection(from: json)
-        
+        try convert(collection: collection)
+    }
+    
+    fileprivate func convert(collection: JSONCollection<Any>) throws {
         if collection.nullItems.count > 0 {
             Output.printNewline()
             Output.printCastWarning(for: collection.nullItems.map({ $0.key }))
@@ -32,11 +37,11 @@ struct JSONToSwift {
         let structString = string(from: collection)
         try writeToSwiftFile(string: structString)
         
+        try createSubObjects(from: collection)
+        
         Output.printNewline()
         Output.printThatFileIsWritten()
     }
-
-    //  write string to file at path
 }
 
 extension JSONToSwift {
@@ -55,18 +60,16 @@ extension JSONToSwift {
         strings.append(.initializer)
         strings.append(.newLine)
         addInitializerDelclarations(in: &strings, from: collection)
-        strings.append(contentsOf: [.close, .newLine, .close])
-        if generateEquatable {
-            strings.append(contentsOf: [.newLine, .newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
-            for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
-                strings.append(.equatableComparison(name: key))
-                if index < collection.nonNullItems.count - 1 {
-                    strings.append(.andOperator)
-                    strings.append(.newLine)
-                }
+        strings.append(contentsOf: [.close, .newLine, .close, .newLine])
+        strings.append(contentsOf: [.newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
+        for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
+            strings.append(.equatableComparison(name: key))
+            if index < collection.nonNullItems.count - 1 {
+                strings.append(.andOperator)
+                strings.append(.newLine)
             }
-            strings.append(contentsOf: [.newLine, .close, .newLine, .close])
         }
+        strings.append(contentsOf: [.newLine, .close, .newLine, .close])
         return strings.reduce("", { (string, interactor) -> String in
             return string + interactor.description
         })
@@ -77,83 +80,65 @@ extension JSONToSwift {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.array.comment))
             strings.append(.newLine)
-            for array in collection.arrayItems {
-                strings.append(.property(name: array.key, type: JSONStringProvider.array.description))
-                strings.append(.newLine)
-            }
+            collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.dictionaryItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.dictionary.comment))
             strings.append(.newLine)
-            for dictionary in collection.dictionaryItems {
-                strings.append(.property(name: dictionary.key, type: JSONStringProvider.dictionary.description))
-                strings.append(.newLine)
-            }
+            collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.stringItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.string.comment))
             strings.append(.newLine)
-            for string in collection.stringItems {
-                strings.append(.property(name: string.key, type: JSONStringProvider.string.description))
-                strings.append(.newLine)
-            }
+            collection.stringItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.numberItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.number.comment))
             strings.append(.newLine)
-            for number in collection.numberItems {
-                strings.append(.property(name: number.key, type: JSONStringProvider.number.description))
-                strings.append(.newLine)
-            }
+            collection.numberItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.boolItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.bool.comment))
             strings.append(.newLine)
-            for bool in collection.boolItems {
-                strings.append(.property(name: bool.key, type: JSONStringProvider.bool.description))
-                strings.append(.newLine)
-            }
+            collection.boolItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.nullItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.null.comment))
             strings.append(.newLine)
-            for null in collection.nullItems {
-                strings.append(.property(name: null.key, type: JSONStringProvider.null.description))
-                strings.append(.newLine)
-            }
+            collection.nullItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
     }
     
+    fileprivate func appendProperty(string: String, stringsCollection: inout [StringInteractor]) {
+        stringsCollection.append(.property(string: string))
+        stringsCollection.append(.newLine)
+    }
+    
     fileprivate func addInitializerDelclarations(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
-        for array in collection.arrayItems {
-            strings.append(.initProperty(name: array.key, provider: JSONStringProvider.array))
-            strings.append(.newLine)
+        collection.arrayItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.objectItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.stringItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.numberItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.boolItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.nullItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+    }
+}
+
+extension JSONToSwift {
+    fileprivate func createSubObjects(from collection: JSONCollection<Any>) throws {
+        var jsonToSwiftGenerators: [JSONToSwift] = []
+        for (index, name) in collection.objectItemStructNames.enumerated() {
+            let dictionary = collection.dictionaryItems[index].value as? [String: Any] ?? [:]
+            let newCollection = JSONCollection(dictionary)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection)
+            jsonToSwiftGenerators.append(generator)
         }
-        for dictionary in collection.dictionaryItems {
-            strings.append(.initProperty(name: dictionary.key, provider: JSONStringProvider.dictionary))
-            strings.append(.newLine)
-        }
-        for string in collection.stringItems {
-            strings.append(.initProperty(name: string.key, provider: JSONStringProvider.string))
-            strings.append(.newLine)
-        }
-        for number in collection.numberItems {
-            strings.append(.initProperty(name: number.key, provider: JSONStringProvider.number))
-            strings.append(.newLine)
-        }
-        for bool in collection.boolItems {
-            strings.append(.initProperty(name: bool.key, provider: JSONStringProvider.bool))
-            strings.append(.newLine)
-        }
-        for null in collection.nullItems {
-            strings.append(.initProperty(name: null.key, provider: JSONStringProvider.null))
-            strings.append(.newLine)
-        }
+        try jsonToSwiftGenerators.forEach({ try $0.convert(collection: $0.subObject!) })
     }
 }
 

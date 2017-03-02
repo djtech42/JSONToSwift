@@ -82,8 +82,9 @@ extension JSONCollection: Collection {
 
 extension JSONCollection {
     var nonNullItems: [(key: String, value: Element)]  {
-        return contents.filter { $0.value is Array<Any> || $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool}
+        return contents.filter { $0.value is Array<Any> || $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool }
     }
+    
     var arrayItems: [(key: String, value: Element)] {
         return contents.filter { $0.value is Array<Any> }
     }
@@ -101,10 +102,77 @@ extension JSONCollection {
     }
     
     var boolItems: [(key: String, value: Element)] {
-        return contents.filter { $0.value is Bool }
+        let mutableCopy = contents.filter({ !($0.value is Double)  })
+        return mutableCopy.filter { $0.value is Bool }
     }
     
     var nullItems: [(key: String, value: Element)] {
         return contents.filter { !($0.value is Array<Any>) && !($0.value is Dictionary<String, Any>) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
     }
 }
+
+extension JSONCollection {
+    var arrayItemPropertyStrings: [String] {
+        return arrayItems.map { "let \($0.key): [Any]" }
+    }
+    
+    var arrayItemInitStrings: [String] {
+        return arrayItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? [Any] ?? []" }
+    }
+    
+    var objectItemPropertyStrings: [String] {
+        return dictionaryItems.map { "let \($0.key): \($0.key.capitalized)JSON" }
+    }
+    
+    var objectItemInitStrings: [String] {
+        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\nself.\($0.key) = \($0.key.capitalized)JSON(with: object)" }
+    }
+    
+    var objectItemStructNames: [String] {
+        return dictionaryItems.map { object in
+            let nameString = object.key.capitalized
+            let name = nameString.replacingOccurrences(of: " ", with: "")
+            return "\(name)JSON"
+        }
+    }
+    
+    var stringItemPropertyStrings: [String] {
+        return stringItems.map { "let \($0.key): String" }
+    }
+    
+    var stringItemInitStrings: [String] {
+        return stringItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? String ?? \"\"" }
+    }
+    
+    var numberItemPropertyStrings: [String] {
+        return numberItems.map { "let \($0.key): Double" }
+    }
+    
+    var numberItemInitStrings: [String] {
+        return numberItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? Double ?? 0.0" }
+    }
+    
+    var boolItemPropertyStrings: [String] {
+        let mutableCopy: [String] = boolItems.filter({ !($0.value is Double)  }).map { $0.key }
+        return mutableCopy.map { "let \($0): Bool" }
+    }
+    
+    var boolItemInitStrings: [String] {
+        let mutableCopy: [String] = boolItems.filter({ !($0.value is Double)  }).map { $0.key }
+        return mutableCopy.map { "self.\($0) = dictionary[\"\($0)\"] as? Bool ?? false" }
+    }
+    
+    var nullItemPropertyStrings: [String] {
+        return nullItems.map { "let \($0.key): Any?" }
+    }
+    
+    var nullItemInitStrings: [String] {
+        return nullItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as Any" }
+    }
+}
+
+
+
+
+
+

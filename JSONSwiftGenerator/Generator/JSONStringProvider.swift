@@ -17,41 +17,12 @@ enum JSONStringProvider {
     case null
 }
 
-extension JSONStringProvider: CustomStringConvertible {
-    var description: String {
-        switch self {
-        case .array: return "[Any]"
-        case .dictionary: return "[String: Any]"
-        case .string: return "String"
-        case .number: return "Double"
-        case .bool: return "Bool"
-        case .null: return "Any?"
-        }
-    }
-    
-    var defaultValue: String? {
-        switch self {
-        case .array: return "[]"
-        case .dictionary: return "[:]"
-        case .string: return "\"\""
-        case .number: return "0.0"
-        case .bool: return "false"
-        case .null: return .none
-        }
-    }
-    
-    var nullDefault: String? {
-        switch self {
-        case .null: return "Any"
-        default: return .none
-        }
-    }
-    
+extension JSONStringProvider {
     var comment: String {
         let specificString: String
         switch self {
         case .array: specificString = "Array"
-        case .dictionary: specificString = "Dictionary"
+        case .dictionary: specificString = "Other"
         case .string: specificString = "String"
         case .number: specificString = "Number"
         case .bool: specificString = "Bool"
@@ -59,4 +30,5 @@ extension JSONStringProvider: CustomStringConvertible {
         }
         return "//    \(specificString) Objects"
     }
+    
 }
