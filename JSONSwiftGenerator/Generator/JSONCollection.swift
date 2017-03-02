@@ -111,6 +111,10 @@ extension JSONCollection {
 }
 
 extension JSONCollection {
+    var arrayItemPropertyStrings: [String] {
+        return arrayItems.map { "let \($0.key): [Any]" }
+    }
+    
     var stringItemPropertyStrings: [String] {
         return stringItems.map { "let \($0.key): String" }
     }

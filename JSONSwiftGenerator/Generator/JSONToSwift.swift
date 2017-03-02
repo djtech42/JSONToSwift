@@ -67,15 +67,12 @@ extension JSONToSwift {
     }
     
     fileprivate func addPropertyStrings(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
-//        if collection.arrayItems.count > 0 {
-//            strings.append(.newLine)
-//            strings.append(.comment(string: JSONStringProvider.array.comment))
-//            strings.append(.newLine)
-////            for array in collection.arrayItems {
-////                strings.append(.property(name: array.key, type: JSONStringProvider.array.description))
-////                strings.append(.newLine)
-////            }
-//        }
+        if collection.arrayItems.count > 0 {
+            strings.append(.newLine)
+            strings.append(.comment(string: JSONStringProvider.array.comment))
+            strings.append(.newLine)
+            collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        }
 //        if collection.dictionaryItems.count > 0 {
 //            strings.append(.newLine)
 //            strings.append(.comment(string: JSONStringProvider.dictionary.comment))
