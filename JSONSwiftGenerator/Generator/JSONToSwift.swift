@@ -73,15 +73,12 @@ extension JSONToSwift {
             strings.append(.newLine)
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
-//        if collection.dictionaryItems.count > 0 {
-//            strings.append(.newLine)
-//            strings.append(.comment(string: JSONStringProvider.dictionary.comment))
-//            strings.append(.newLine)
-////            for dictionary in collection.dictionaryItems {
-////                strings.append(.property(name: dictionary.key, type: JSONStringProvider.dictionary.description))
-////                strings.append(.newLine)
-////            }
-//        }
+        if collection.dictionaryItems.count > 0 {
+            strings.append(.newLine)
+            strings.append(.comment(string: JSONStringProvider.dictionary.comment))
+            strings.append(.newLine)
+            collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        }
         if collection.stringItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.string.comment))
@@ -115,10 +112,7 @@ extension JSONToSwift {
     
     fileprivate func addInitializerDelclarations(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
         collection.arrayItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
-//        for dictionary in collection.dictionaryItems {
-//            strings.append(.initProperty(name: dictionary.key, provider: JSONStringProvider.dictionary(name: dictionary.key)))
-//            strings.append(.newLine)
-//        }
+        collection.objectItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         collection.stringItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         collection.numberItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         collection.boolItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })

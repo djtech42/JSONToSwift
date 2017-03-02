@@ -16,7 +16,6 @@ enum StringInteractor {
     case close
     case initializer
     case property(string: String)
-    case initProperty(string: String)
     case equatableFunctionDeclaration(name: String)
     case equatableFunctionStart
     case equatableComparison(name: String)
@@ -34,7 +33,6 @@ extension StringInteractor: CustomStringConvertible {
         case .close: return "}"
         case .initializer: return "init(with dictionary: [String: Any]) {"
         case .property(let string): return string
-        case .initProperty(let string): return string
         case .equatableFunctionDeclaration(let name): return "static func ==(lhs: \(name), rhs: \(name)) -> Bool {"
         case .equatableFunctionStart: return "return "
         case .equatableComparison(let name): return "lhs.\(name) == rhs.\(name)"

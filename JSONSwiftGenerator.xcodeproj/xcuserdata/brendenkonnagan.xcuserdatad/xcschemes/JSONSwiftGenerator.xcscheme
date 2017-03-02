@@ -68,11 +68,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "https://takeoff.sportys.com/takeoff-test/api/public/tags"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/brendenkonnagan/Desktop/Posts.json"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

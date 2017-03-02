@@ -119,6 +119,14 @@ extension JSONCollection {
         return arrayItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? [Any] ?? []" }
     }
     
+    var objectItemPropertyStrings: [String] {
+        return dictionaryItems.map { "let \($0.key): \($0.key.capitalized)JSON" }
+    }
+    
+    var objectItemInitStrings: [String] {
+        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\nself.\($0.key) = \($0.key.capitalized)JSON(with: object)" }
+    }
+    
     var stringItemPropertyStrings: [String] {
         return stringItems.map { "let \($0.key): String" }
     }
