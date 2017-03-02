@@ -71,6 +71,10 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "https://takeoff.sportys.com/takeoff-test/api/public/tags"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "/Users/brendenkonnagan/Desktop/Posts.json"
             isEnabled = "NO">
          </CommandLineArgument>
