@@ -109,3 +109,27 @@ extension JSONCollection {
         return contents.filter { !($0.value is Array<Any>) && !($0.value is Dictionary<String, Any>) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
     }
 }
+
+extension JSONCollection {
+    var stringItemPropertyStrings: [String] {
+        return stringItems.map { "let \($0.key): String" }
+    }
+    
+    var numberItemPropertyStrings: [String] {
+        return numberItems.map { "let \($0.key): Double" }
+    }
+    
+    var boolItemPropertyStrings: [String] {
+        return boolItems.map { "let \($0.key): Bool" }
+    }
+    
+    var nullItemPropertyStrings: [String] {
+        return nullItems.map { "let \($0.key): Any?" }
+    }
+}
+
+
+
+
+
+

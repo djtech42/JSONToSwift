@@ -67,60 +67,53 @@ extension JSONToSwift {
     }
     
     fileprivate func addPropertyStrings(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
-        if collection.arrayItems.count > 0 {
-            strings.append(.newLine)
-            strings.append(.comment(string: JSONStringProvider.array.comment))
-            strings.append(.newLine)
-            for array in collection.arrayItems {
-                strings.append(.property(name: array.key, type: JSONStringProvider.array.description))
-                strings.append(.newLine)
-            }
-        }
-        if collection.dictionaryItems.count > 0 {
-            strings.append(.newLine)
-            strings.append(.comment(string: JSONStringProvider.dictionary.comment))
-            strings.append(.newLine)
-            for dictionary in collection.dictionaryItems {
-                strings.append(.property(name: dictionary.key, type: JSONStringProvider.dictionary.description))
-                strings.append(.newLine)
-            }
-        }
+//        if collection.arrayItems.count > 0 {
+//            strings.append(.newLine)
+//            strings.append(.comment(string: JSONStringProvider.array.comment))
+//            strings.append(.newLine)
+////            for array in collection.arrayItems {
+////                strings.append(.property(name: array.key, type: JSONStringProvider.array.description))
+////                strings.append(.newLine)
+////            }
+//        }
+//        if collection.dictionaryItems.count > 0 {
+//            strings.append(.newLine)
+//            strings.append(.comment(string: JSONStringProvider.dictionary.comment))
+//            strings.append(.newLine)
+////            for dictionary in collection.dictionaryItems {
+////                strings.append(.property(name: dictionary.key, type: JSONStringProvider.dictionary.description))
+////                strings.append(.newLine)
+////            }
+//        }
         if collection.stringItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.string.comment))
             strings.append(.newLine)
-            for string in collection.stringItems {
-                strings.append(.property(name: string.key, type: JSONStringProvider.string.description))
-                strings.append(.newLine)
-            }
+            collection.stringItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.numberItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.number.comment))
             strings.append(.newLine)
-            for number in collection.numberItems {
-                strings.append(.property(name: number.key, type: JSONStringProvider.number.description))
-                strings.append(.newLine)
-            }
+            collection.numberItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.boolItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.bool.comment))
             strings.append(.newLine)
-            for bool in collection.boolItems {
-                strings.append(.property(name: bool.key, type: JSONStringProvider.bool.description))
-                strings.append(.newLine)
-            }
+            collection.boolItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
         if collection.nullItems.count > 0 {
             strings.append(.newLine)
             strings.append(.comment(string: JSONStringProvider.null.comment))
             strings.append(.newLine)
-            for null in collection.nullItems {
-                strings.append(.property(name: null.key, type: JSONStringProvider.null.description))
-                strings.append(.newLine)
-            }
+            collection.nullItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         }
+    }
+    
+    fileprivate func appendProperty(string: String, stringsCollection: inout [StringInteractor]) {
+        stringsCollection.append(.property(string: string))
+        stringsCollection.append(.newLine)
     }
     
     fileprivate func addInitializerDelclarations(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
@@ -129,7 +122,7 @@ extension JSONToSwift {
             strings.append(.newLine)
         }
         for dictionary in collection.dictionaryItems {
-            strings.append(.initProperty(name: dictionary.key, provider: JSONStringProvider.dictionary))
+            strings.append(.initProperty(name: dictionary.key, provider: JSONStringProvider.dictionary(name: dictionary.key)))
             strings.append(.newLine)
         }
         for string in collection.stringItems {

@@ -15,7 +15,7 @@ enum StringInteractor {
     case newLine
     case close
     case initializer
-    case property(name: String, type: String)
+    case property(string: String)
     case initProperty(name: String, provider: JSONStringProvider)
     case equatableFunctionDeclaration(name: String)
     case equatableFunctionStart
@@ -33,7 +33,7 @@ extension StringInteractor: CustomStringConvertible {
         case .newLine: return "\n"
         case .close: return "}"
         case .initializer: return "init(with dictionary: [String: Any]) {"
-        case .property(let name, let type): return "let \(name): \(type)"
+        case .property(let string): return string
         case .initProperty(let name, let provider): return provider.defaultValue == nil ? "self.\(name) = dictionary[\"\(name)\"] as \(provider.nullDefault!)" : "self.\(name) = dictionary[\"\(name)\"] as? \(provider.description) ?? \(provider.defaultValue!)"
         case .equatableFunctionDeclaration(let name): return "static func ==(lhs: \(name), rhs: \(name)) -> Bool {"
         case .equatableFunctionStart: return "return "

@@ -10,7 +10,7 @@ import Foundation
 
 enum JSONStringProvider {
     case array
-    case dictionary
+    case dictionary(name: String)
     case string
     case number
     case bool
@@ -21,7 +21,7 @@ extension JSONStringProvider: CustomStringConvertible {
     var description: String {
         switch self {
         case .array: return "[Any]"
-        case .dictionary: return "[String: Any]"
+        case .dictionary(let name): return "\(name)"
         case .string: return "String"
         case .number: return "Double"
         case .bool: return "Bool"
@@ -32,7 +32,7 @@ extension JSONStringProvider: CustomStringConvertible {
     var defaultValue: String? {
         switch self {
         case .array: return "[]"
-        case .dictionary: return "[:]"
+        case .dictionary: return ""
         case .string: return "\"\""
         case .number: return "0.0"
         case .bool: return "false"
@@ -51,7 +51,7 @@ extension JSONStringProvider: CustomStringConvertible {
         let specificString: String
         switch self {
         case .array: specificString = "Array"
-        case .dictionary: specificString = "Dictionary"
+        case .dictionary: specificString = "Other"
         case .string: specificString = "String"
         case .number: specificString = "Number"
         case .bool: specificString = "Bool"
@@ -59,4 +59,5 @@ extension JSONStringProvider: CustomStringConvertible {
         }
         return "//    \(specificString) Objects"
     }
+    
 }
