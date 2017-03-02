@@ -115,20 +115,40 @@ extension JSONCollection {
         return arrayItems.map { "let \($0.key): [Any]" }
     }
     
+    var arrayItemInitStrings: [String] {
+        return arrayItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? [Any] ?? []" }
+    }
+    
     var stringItemPropertyStrings: [String] {
         return stringItems.map { "let \($0.key): String" }
+    }
+    
+    var stringItemInitStrings: [String] {
+        return stringItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? String ?? \"\"" }
     }
     
     var numberItemPropertyStrings: [String] {
         return numberItems.map { "let \($0.key): Double" }
     }
     
+    var numberItemInitStrings: [String] {
+        return numberItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? Double ?? 0.0" }
+    }
+    
     var boolItemPropertyStrings: [String] {
         return boolItems.map { "let \($0.key): Bool" }
     }
     
+    var boolItemInitStrings: [String] {
+        return boolItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? Bool ?? false" }
+    }
+    
     var nullItemPropertyStrings: [String] {
         return nullItems.map { "let \($0.key): Any?" }
+    }
+    
+    var nullItemInitStrings: [String] {
+        return nullItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as Any" }
     }
 }
 

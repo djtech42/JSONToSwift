@@ -114,30 +114,15 @@ extension JSONToSwift {
     }
     
     fileprivate func addInitializerDelclarations(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
-        for array in collection.arrayItems {
-            strings.append(.initProperty(name: array.key, provider: JSONStringProvider.array))
-            strings.append(.newLine)
-        }
-        for dictionary in collection.dictionaryItems {
-            strings.append(.initProperty(name: dictionary.key, provider: JSONStringProvider.dictionary(name: dictionary.key)))
-            strings.append(.newLine)
-        }
-        for string in collection.stringItems {
-            strings.append(.initProperty(name: string.key, provider: JSONStringProvider.string))
-            strings.append(.newLine)
-        }
-        for number in collection.numberItems {
-            strings.append(.initProperty(name: number.key, provider: JSONStringProvider.number))
-            strings.append(.newLine)
-        }
-        for bool in collection.boolItems {
-            strings.append(.initProperty(name: bool.key, provider: JSONStringProvider.bool))
-            strings.append(.newLine)
-        }
-        for null in collection.nullItems {
-            strings.append(.initProperty(name: null.key, provider: JSONStringProvider.null))
-            strings.append(.newLine)
-        }
+        collection.arrayItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+//        for dictionary in collection.dictionaryItems {
+//            strings.append(.initProperty(name: dictionary.key, provider: JSONStringProvider.dictionary(name: dictionary.key)))
+//            strings.append(.newLine)
+//        }
+        collection.stringItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.numberItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.boolItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.nullItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
     }
 }
 
