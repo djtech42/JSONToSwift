@@ -125,7 +125,7 @@ extension JSONCollection {
     }
     
     var objectItemInitStrings: [String] {
-        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\nself.\($0.key) = \($0.key.capitalized)JSON(with: \($0.key)object)" }
+        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\nself.\($0.key) = \($0.key.capitalized)JSON(with: \($0.key)Object)" }
     }
     
     var objectItemStructNames: [String] {
