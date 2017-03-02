@@ -60,7 +60,7 @@ struct Output {
     
     static func printCastWarning(for keys: [String]) {
         for key in keys {
-            print("\(key) has a null value, so it was casted to Any? by default")
+            print("\(key) has a null value, so it was cast to Any? by default")
         }
     }
     
