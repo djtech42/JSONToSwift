@@ -11,14 +11,16 @@ import Foundation
 struct JSONToSwift {
     fileprivate let jsonPath: URL
     fileprivate let rootObjectName: String
+    let rootFolderName:  String?
     fileprivate let generateEquatable: Bool
     let subObject: JSONCollection<Any>?
     
-    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection<Any>? = .none) {
+    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection<Any>? = .none, rootFolderName: String? = .none) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
         self.generateEquatable = generateEquatable
         self.subObject = subObject
+        self.rootFolderName = rootFolderName
     }
     
     func convert() throws {
@@ -135,7 +137,8 @@ extension JSONToSwift {
         for (index, name) in collection.objectItemStructNames.enumerated() {
             let dictionary = collection.dictionaryItems[index].value as? [String: Any] ?? [:]
             let newCollection = JSONCollection(dictionary)
-            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection)
+            let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory)
             jsonToSwiftGenerators.append(generator)
         }
         try jsonToSwiftGenerators.forEach({ try $0.convert(collection: $0.subObject!) })
@@ -145,7 +148,14 @@ extension JSONToSwift {
 extension JSONToSwift {
     fileprivate func writeToSwiftFile(string: String) throws {
         guard let desktopPath = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first else { return }
-        let filePath = desktopPath.appendingPathComponent("\(rootObjectName).swift")
+        var folderName: String?
+        if let createFolderWithName = rootFolderName {
+            folderName = createFolderWithName + " Sub Objects"
+            let newURL = desktopPath.appendingPathComponent(folderName!, isDirectory: true)
+            try! FileManager.default.createDirectory(at: newURL, withIntermediateDirectories: true, attributes: nil)
+        }
+        let fileWithSubdirectory = folderName != nil ? "\(folderName!)/\(rootObjectName).swift" : "\(rootObjectName).swift"
+        let filePath = desktopPath.appendingPathComponent(fileWithSubdirectory)
         try string.write(to: filePath, atomically: true, encoding: .utf8)
     }
 }
