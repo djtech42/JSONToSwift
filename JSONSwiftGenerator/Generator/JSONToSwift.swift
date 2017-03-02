@@ -11,17 +11,22 @@ import Foundation
 struct JSONToSwift {
     fileprivate let jsonPath: URL
     fileprivate let rootObjectName: String
+    let subObject: JSONCollection<Any>?
     
-    init(with jsonPath: URL, rootObjectName: String) {
+    init(with jsonPath: URL, rootObjectName: String, subObject: JSONCollection<Any>? = .none) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
+        self.subObject = subObject
     }
     
     func convert() throws {
         let jsonData = try Data(contentsOf: jsonPath)
         let json = try JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers)
         let collection = try JSONInteractor.generateCollection(from: json)
-        
+        try convert(collection: collection)
+    }
+    
+    fileprivate func convert(collection: JSONCollection<Any>) throws {
         if collection.nullItems.count > 0 {
             Output.printNewline()
             Output.printCastWarning(for: collection.nullItems.map({ $0.key }))
@@ -29,6 +34,8 @@ struct JSONToSwift {
         
         let structString = string(from: collection)
         try writeToSwiftFile(string: structString)
+        
+        try createSubObjects(from: collection)
         
         Output.printNewline()
         Output.printThatFileIsWritten()
@@ -117,6 +124,19 @@ extension JSONToSwift {
         collection.numberItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         collection.boolItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
         collection.nullItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+    }
+}
+
+extension JSONToSwift {
+    fileprivate func createSubObjects(from collection: JSONCollection<Any>) throws {
+        var jsonToSwiftGenerators: [JSONToSwift] = []
+        for (index, name) in collection.objectItemStructNames.enumerated() {
+            let dictionary = collection.dictionaryItems[index].value as? [String: Any] ?? [:]
+            let newCollection = JSONCollection(dictionary)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, subObject: newCollection)
+            jsonToSwiftGenerators.append(generator)
+        }
+        try jsonToSwiftGenerators.forEach({ try $0.convert(collection: $0.subObject!) })
     }
 }
 
