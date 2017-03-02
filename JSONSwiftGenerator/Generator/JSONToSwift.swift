@@ -62,16 +62,18 @@ extension JSONToSwift {
         strings.append(.initializer)
         strings.append(.newLine)
         addInitializerDelclarations(in: &strings, from: collection)
-        strings.append(contentsOf: [.close, .newLine, .close, .newLine])
-        strings.append(contentsOf: [.newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
-        for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
-            strings.append(.equatableComparison(name: key))
-            if index < collection.nonNullItems.count - 1 {
-                strings.append(.andOperator)
-                strings.append(.newLine)
+        strings.append(contentsOf: [.close, .newLine, .close])
+        if generateEquatable {
+            strings.append(contentsOf: [.newLine, .newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
+            for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
+                strings.append(.equatableComparison(name: key))
+                if index < collection.nonNullItems.count - 1 {
+                    strings.append(.andOperator)
+                    strings.append(.newLine)
+                }
             }
+            strings.append(contentsOf: [.newLine, .close, .newLine, .close])
         }
-        strings.append(contentsOf: [.newLine, .close, .newLine, .close])
         return strings.reduce("", { (string, interactor) -> String in
             return string + interactor.description
         })
