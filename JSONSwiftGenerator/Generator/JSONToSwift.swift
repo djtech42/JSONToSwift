@@ -33,8 +33,6 @@ struct JSONToSwift {
         Output.printNewline()
         Output.printThatFileIsWritten()
     }
-
-    //  write string to file at path
 }
 
 extension JSONToSwift {
