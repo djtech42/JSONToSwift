@@ -10,7 +10,10 @@ import Foundation
 
 extension String {
     var camelCased: String {
-        if let existingFirstCharacter = characters.first, existingFirstCharacter.isUppercase {
+        if isUppercase {
+            return self
+        }
+        else if let existingFirstCharacter = characters.first, existingFirstCharacter.isUppercase {
             return camelCasedUppercase()
         }
         else {
@@ -31,7 +34,7 @@ extension String {
         
         if characters.contains(" ") {
             firstCharacter = substring(to: index(startIndex, offsetBy: 1))
-            let capitalizedWithoutSpaces = capitalized.replacingOccurrences(of: " ", with: "")
+            let capitalizedWithoutSpaces = capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
         } else {
             firstCharacter = substring(to: lowercased().index(startIndex, offsetBy: 1))
@@ -46,10 +49,10 @@ extension String {
         
         if characters.contains(" ") {
             firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
-            let capitalizedWithoutSpaces = capitalized.replacingOccurrences(of: " ", with: "")
+            let capitalizedWithoutSpaces = capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
         } else {
-            firstCharacter = substring(to: index(startIndex, offsetBy: 1))
+            firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
             restOfString = String(characters.dropFirst())
         }
         

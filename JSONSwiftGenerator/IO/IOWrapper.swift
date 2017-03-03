@@ -52,9 +52,7 @@ struct Output {
     }
     
     static func printCastWarning(for keys: [String]) {
-        for key in keys {
-            print("\(key) has a null value, so it was cast to Any? by default")
-        }
+        keys.forEach { print("\($0) has a null value, so it was cast to Any? by default") }
     }
     
     static func printThatFileIsWritten() {
