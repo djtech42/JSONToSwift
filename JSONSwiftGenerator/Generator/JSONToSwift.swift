@@ -12,11 +12,13 @@ struct JSONToSwift {
     fileprivate let jsonPath: URL
     fileprivate let rootObjectName: String
     let rootFolderName:  String?
+    fileprivate let generateEquatable: Bool
     let subObject: JSONCollection<Any>?
     
-    init(with jsonPath: URL, rootObjectName: String, subObject: JSONCollection<Any>? = .none, rootFolderName: String? = .none) {
+    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection<Any>? = .none, rootFolderName: String? = .none) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
+        self.generateEquatable = generateEquatable
         self.subObject = subObject
         self.rootFolderName = rootFolderName
     }
@@ -60,16 +62,18 @@ extension JSONToSwift {
         strings.append(.initializer)
         strings.append(.newLine)
         addInitializerDelclarations(in: &strings, from: collection)
-        strings.append(contentsOf: [.close, .newLine, .close, .newLine])
-        strings.append(contentsOf: [.newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
-        for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
-            strings.append(.equatableComparison(name: key))
-            if index < collection.nonNullItems.count - 1 {
-                strings.append(.andOperator)
-                strings.append(.newLine)
+        strings.append(contentsOf: [.close, .newLine, .close])
+        if generateEquatable {
+            strings.append(contentsOf: [.newLine, .newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
+            for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
+                strings.append(.equatableComparison(name: key))
+                if index < collection.nonNullItems.count - 1 {
+                    strings.append(.andOperator)
+                    strings.append(.newLine)
+                }
             }
+            strings.append(contentsOf: [.newLine, .close, .newLine, .close])
         }
-        strings.append(contentsOf: [.newLine, .close, .newLine, .close])
         return strings.reduce("", { (string, interactor) -> String in
             return string + interactor.description
         })
@@ -136,7 +140,7 @@ extension JSONToSwift {
             let dictionary = collection.dictionaryItems[index].value as? [String: Any] ?? [:]
             let newCollection = JSONCollection(dictionary)
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
-            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, subObject: newCollection, rootFolderName: nameForDirectory)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory)
             jsonToSwiftGenerators.append(generator)
         }
         try jsonToSwiftGenerators.forEach({ try $0.convert(collection: $0.subObject!) })

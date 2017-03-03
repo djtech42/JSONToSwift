@@ -9,9 +9,15 @@
 import Foundation
 
 enum RecognizedArguments: String {
-    case url
+    case equatable
     
-    static func recognized(from flag: String) -> RecognizedArguments? {
-        if flag == "-u" { return .url } else { return .none }
+    static func recognized(from flags: [String]) -> [RecognizedArguments] {
+        var recognized: [RecognizedArguments] = []
+        
+        if flags.contains("-e") {
+            recognized.append(.equatable)
+        }
+        
+        return recognized
     }
 }
