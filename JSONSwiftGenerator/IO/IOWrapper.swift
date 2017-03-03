@@ -9,8 +9,13 @@
 import Foundation
 
 enum Input {
-    static var flags: [String] {
+    static var arguments: [String] {
         return Array(CommandLine.arguments.dropFirst())
+    }
+    static var flags: [Character]? {
+        guard let existingHyphenArgument = arguments.first(where: { $0.characters.first == "-" }) else { return nil }
+        
+        return Array(existingHyphenArgument.characters.dropFirst())
     }
     
     static func getFilePath() -> DataRouter {
@@ -34,13 +39,12 @@ enum Input {
 
 extension Input {
     static func route(from arguments: [String]) -> DataRouter? {
-        var enteredArguments = arguments
+        let enteredArguments = arguments
         
-        guard enteredArguments.count > 0 else { return .none }
-        let firstArgument = enteredArguments.removeFirst()
-        if let url = URL(string: firstArgument) {
+        guard enteredArguments.count > 0, let fileArgument = enteredArguments.first(where: { $0.contains(".") }) else { return .none }
+        if let url = URL(string: fileArgument) {
             if url.host != nil { return .url(location: url) }
-            else { return .file(location: URL(fileURLWithPath: firstArgument)) }
+            else { return .file(location: URL(fileURLWithPath: fileArgument)) }
         }
         return .none
     }

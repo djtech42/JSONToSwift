@@ -10,12 +10,18 @@ import Foundation
 
 enum RecognizedArguments: String {
     case equatable
+    case automaticRootName
     
-    static func recognized(from flags: [String]) -> [RecognizedArguments] {
+    static func recognized(from flags: [Character]?) -> [RecognizedArguments] {
+        guard let existingFlags = flags else { return [] }
+        
         var recognized: [RecognizedArguments] = []
         
-        if flags.contains("-e") {
+        if existingFlags.contains("e") {
             recognized.append(.equatable)
+        }
+        if existingFlags.contains("n") {
+            recognized.append(.automaticRootName)
         }
         
         return recognized
