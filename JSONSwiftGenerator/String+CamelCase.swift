@@ -10,7 +10,10 @@ import Foundation
 
 extension String {
     var camelCased: String {
-        if let existingFirstCharacter = characters.first, existingFirstCharacter.isUppercase {
+        if isUppercase {
+            return self
+        }
+        else if let existingFirstCharacter = characters.first, existingFirstCharacter.isUppercase {
             return camelCasedUppercase()
         }
         else {
@@ -49,7 +52,7 @@ extension String {
             let capitalizedWithoutSpaces = capitalized.replacingOccurrences(of: " ", with: "")
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
         } else {
-            firstCharacter = substring(to: index(startIndex, offsetBy: 1))
+            firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
             restOfString = String(characters.dropFirst())
         }
         
