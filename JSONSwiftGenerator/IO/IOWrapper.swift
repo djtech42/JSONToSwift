@@ -59,7 +59,7 @@ enum Output {
         keys.forEach { print("\($0) has a null value, so it was cast to Any? by default") }
     }
     
-    static func printThatFileIsWritten() {
-        print("file written successfully")
+    static func printThatFileIsWritten(withName name: String) {
+        print("file \(name) written successfully")
     }
 }

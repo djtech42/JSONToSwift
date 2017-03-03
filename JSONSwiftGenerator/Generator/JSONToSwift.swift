@@ -14,19 +14,37 @@ struct JSONToSwift {
     let rootFolderName:  String?
     fileprivate let generateEquatable: Bool
     let subObject: JSONCollection<Any>?
+    let verbose: Bool
+    let startTime: CFAbsoluteTime
     
-    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection<Any>? = .none, rootFolderName: String? = .none) {
+    var elapsedTime: CFAbsoluteTime {
+        return CFAbsoluteTimeGetCurrent() - startTime
+    }
+    
+    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection<Any>? = .none, rootFolderName: String? = .none, verbose: Bool) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
         self.generateEquatable = generateEquatable
         self.subObject = subObject
         self.rootFolderName = rootFolderName
+        self.verbose = verbose
+        
+        startTime = CFAbsoluteTimeGetCurrent()
     }
     
     func convert() throws {
         let jsonData = try Data(contentsOf: jsonPath)
+        if verbose {
+            print("verbose: data read from \(rootObjectName) JSON\t\(elapsedTime)")
+        }
         let json = try JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers)
+        if verbose {
+            print("verbose: data serialized from \(rootObjectName) JSON\t\(elapsedTime)")
+        }
         let collection = try JSONInteractor.generateCollection(from: json)
+        if verbose {
+            print("verbose: \(rootObjectName) serialization converted to Swift collection\t\(elapsedTime)")
+        }
         try convert(collection: collection)
     }
     
@@ -37,12 +55,18 @@ struct JSONToSwift {
         }
         
         let structString = string(from: collection)
+        if verbose {
+            print("verbose: Swift collection for \(rootObjectName) converted to a string")
+        }
         try writeToSwiftFile(string: structString)
         
         try createSubObjects(from: collection)
         
         Output.printNewline()
-        Output.printThatFileIsWritten()
+        Output.printThatFileIsWritten(withName: rootObjectName)
+        if verbose {
+            Output.printNewline()
+        }
     }
 }
 
@@ -140,7 +164,7 @@ extension JSONToSwift {
             let dictionary = collection.dictionaryItems[index].value as? [String: Any] ?? [:]
             let newCollection = JSONCollection(dictionary)
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
-            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
             jsonToSwiftGenerators.append(generator)
         }
         try jsonToSwiftGenerators.forEach({ try $0.convert(collection: $0.subObject!) })
