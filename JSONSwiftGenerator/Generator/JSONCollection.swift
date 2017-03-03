@@ -82,7 +82,7 @@ extension JSONCollection: Collection {
 
 extension JSONCollection {
     var equatableItems: [(key: String, value: Element)]  {
-        return contents.filter { $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool }
+        return contents.filter { $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] }
     }
     
     var arrayItems: [(key: String, value: Element)] {
