@@ -24,10 +24,10 @@ extension String {
     }
     
     var formattedForSwiftPropertyName: String {
-        return camelCased.removingOccurrencesOfCharacters(from: " $")
+        return camelCased.removingOccurrencesOfCharacters(from: " $-")
     }
     
     var formattedForSwiftTypeName: String {
-        return typeCamelCased.removingOccurrencesOfCharacters(from: " $")
+        return typeCamelCased.removingOccurrencesOfCharacters(from: " $-")
     }
 }
