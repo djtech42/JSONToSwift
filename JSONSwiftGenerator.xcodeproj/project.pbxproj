@@ -21,6 +21,7 @@
 		AF5A59D71E69BFDE009F531E /* String+CamelCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */; };
 		AF5A59D91E69C110009F531E /* Character+Uppercase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D81E69C110009F531E /* Character+Uppercase.swift */; };
 		AF5C0AE81E69CEAB00CBC93E /* String+Uppercase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5C0AE71E69CEAB00CBC93E /* String+Uppercase.swift */; };
+		AF5C0AEA1E69D17500CBC93E /* String+Filtering.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5C0AE91E69D17500CBC93E /* String+Filtering.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,6 +53,7 @@
 		AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CamelCase.swift"; sourceTree = "<group>"; };
 		AF5A59D81E69C110009F531E /* Character+Uppercase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Character+Uppercase.swift"; sourceTree = "<group>"; };
 		AF5C0AE71E69CEAB00CBC93E /* String+Uppercase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Uppercase.swift"; sourceTree = "<group>"; };
+		AF5C0AE91E69D17500CBC93E /* String+Filtering.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Filtering.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 		AF5A59D51E69BFD0009F531E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AF5C0AE91E69D17500CBC93E /* String+Filtering.swift */,
 				AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */,
 				AF5C0AE71E69CEAB00CBC93E /* String+Uppercase.swift */,
 				AF5A59D81E69C110009F531E /* Character+Uppercase.swift */,
@@ -208,6 +211,7 @@
 				AF5C0AE81E69CEAB00CBC93E /* String+Uppercase.swift in Sources */,
 				263781A91E65C79400BE6706 /* JSONToSwiftError.swift in Sources */,
 				263781AD1E65C92700BE6706 /* JSONToSwift.swift in Sources */,
+				AF5C0AEA1E69D17500CBC93E /* String+Filtering.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

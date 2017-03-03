@@ -34,7 +34,7 @@ extension String {
         
         if characters.contains(" ") {
             firstCharacter = substring(to: index(startIndex, offsetBy: 1))
-            let capitalizedWithoutSpaces = capitalized.replacingOccurrences(of: " ", with: "")
+            let capitalizedWithoutSpaces = capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
         } else {
             firstCharacter = substring(to: lowercased().index(startIndex, offsetBy: 1))
@@ -49,7 +49,7 @@ extension String {
         
         if characters.contains(" ") {
             firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
-            let capitalizedWithoutSpaces = capitalized.replacingOccurrences(of: " ", with: "")
+            let capitalizedWithoutSpaces = capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
         } else {
             firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
