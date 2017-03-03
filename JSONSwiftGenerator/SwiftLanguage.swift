@@ -9,6 +9,9 @@
 import Foundation
 
 enum SwiftLanguage {
+    static var disallowedPropertyNameCharacters: [Character] = [" ", "$", "-"]
+    static var disallowedTypeNameCharacters: [Character] = [" ", "$", "-"]
+    
     static func propertyString(name: String, withType type: String) -> String {
         return "let \(name): \(type)"
     }

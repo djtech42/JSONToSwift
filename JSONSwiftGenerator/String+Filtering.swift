@@ -14,7 +14,11 @@ extension String {
     }
     
     func removingOccurrencesOfCharacters(from string: String) -> String {
-        return string.characters.reduce(self) { (currentString, character) -> String in
+        return removingOccurrences(of: Array(string.characters))
+    }
+    
+    func removingOccurrences(of characters: [Character]) -> String {
+        return characters.reduce(self) { (currentString, character) -> String in
             return currentString.removingOccurrences(of: character.description)
         }
     }
@@ -24,10 +28,10 @@ extension String {
     }
     
     var formattedForSwiftPropertyName: String {
-        return camelCased.removingOccurrencesOfCharacters(from: " $-")
+        return camelCased.removingOccurrences(of: SwiftLanguage.disallowedPropertyNameCharacters)
     }
     
     var formattedForSwiftTypeName: String {
-        return typeCamelCased.removingOccurrencesOfCharacters(from: " $-")
+        return typeCamelCased.removingOccurrences(of: SwiftLanguage.disallowedTypeNameCharacters)
     }
 }
