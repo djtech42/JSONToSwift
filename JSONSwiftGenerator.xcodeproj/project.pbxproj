@@ -18,6 +18,8 @@
 		26FA93221E674F5C00A5DF05 /* DataRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FA93211E674F5C00A5DF05 /* DataRouter.swift */; };
 		26FA93241E67531800A5DF05 /* LaunchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FA93231E67531800A5DF05 /* LaunchRouter.swift */; };
 		26FAFDAC1E6721FE00609139 /* RecognizedArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FAFDAB1E6721FE00609139 /* RecognizedArguments.swift */; };
+		AF5A59D71E69BFDE009F531E /* String+CamelCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */; };
+		AF5A59D91E69C110009F531E /* Character+Uppercase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D81E69C110009F531E /* Character+Uppercase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +48,8 @@
 		26FA93231E67531800A5DF05 /* LaunchRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LaunchRouter.swift; path = Router/LaunchRouter.swift; sourceTree = "<group>"; };
 		26FAFDA91E671B0600609139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		26FAFDAB1E6721FE00609139 /* RecognizedArguments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecognizedArguments.swift; path = IO/RecognizedArguments.swift; sourceTree = "<group>"; };
+		AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CamelCase.swift"; sourceTree = "<group>"; };
+		AF5A59D81E69C110009F531E /* Character+Uppercase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Character+Uppercase.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,7 @@
 				26FA93251E67532400A5DF05 /* Routers */,
 				263781A51E65C66100BE6706 /* IO */,
 				263781A41E65B7A400BE6706 /* Generator */,
+				AF5A59D51E69BFD0009F531E /* Extensions */,
 				2637819D1E65B71500BE6706 /* main.swift */,
 				26FAFDA91E671B0600609139 /* README.md */,
 			);
@@ -116,6 +121,15 @@
 				26FA93231E67531800A5DF05 /* LaunchRouter.swift */,
 			);
 			name = Routers;
+			sourceTree = "<group>";
+		};
+		AF5A59D51E69BFD0009F531E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */,
+				AF5A59D81E69C110009F531E /* Character+Uppercase.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,10 +196,12 @@
 				26FA93221E674F5C00A5DF05 /* DataRouter.swift in Sources */,
 				263781AB1E65C87000BE6706 /* JSONCollection.swift in Sources */,
 				263781B31E65DE9C00BE6706 /* StringInteractor.swift in Sources */,
+				AF5A59D71E69BFDE009F531E /* String+CamelCase.swift in Sources */,
 				263781AF1E65C97600BE6706 /* JSONInteractor.swift in Sources */,
 				263781A71E65C67500BE6706 /* IOWrapper.swift in Sources */,
 				26FAFDAC1E6721FE00609139 /* RecognizedArguments.swift in Sources */,
 				26FA93241E67531800A5DF05 /* LaunchRouter.swift in Sources */,
+				AF5A59D91E69C110009F531E /* Character+Uppercase.swift in Sources */,
 				263781A91E65C79400BE6706 /* JSONToSwiftError.swift in Sources */,
 				263781AD1E65C92700BE6706 /* JSONToSwift.swift in Sources */,
 			);
