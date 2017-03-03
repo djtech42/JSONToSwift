@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Input {
+enum Input {
     static var flags: [String] {
         return Array(CommandLine.arguments.dropFirst())
     }
@@ -46,7 +46,7 @@ extension Input {
     }
 }
 
-struct Output {
+enum Output {
     static func printNewline() {
         print()
     }

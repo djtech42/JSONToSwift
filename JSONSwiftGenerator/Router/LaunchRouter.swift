@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct LaunchRouter {
+enum LaunchRouter {
     static func run() throws {
         let argumentRouter = Input.route(from: Input.flags)
         guard let providedUrl = argumentRouter else {
