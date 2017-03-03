@@ -18,6 +18,8 @@
 		26FA93221E674F5C00A5DF05 /* DataRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FA93211E674F5C00A5DF05 /* DataRouter.swift */; };
 		26FA93241E67531800A5DF05 /* LaunchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FA93231E67531800A5DF05 /* LaunchRouter.swift */; };
 		26FAFDAC1E6721FE00609139 /* RecognizedArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FAFDAB1E6721FE00609139 /* RecognizedArguments.swift */; };
+		AF0EB4B71E69D96D0037BBCF /* JSONTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0EB4B61E69D96D0037BBCF /* JSONTypes.swift */; };
+		AF0EB4B91E69E1A10037BBCF /* Dictionary+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0EB4B81E69E1A10037BBCF /* Dictionary+JSON.swift */; };
 		AF5A59D71E69BFDE009F531E /* String+CamelCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */; };
 		AF5A59D91E69C110009F531E /* Character+Uppercase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D81E69C110009F531E /* Character+Uppercase.swift */; };
 		AF5C0AE81E69CEAB00CBC93E /* String+Uppercase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5C0AE71E69CEAB00CBC93E /* String+Uppercase.swift */; };
@@ -50,6 +52,8 @@
 		26FA93231E67531800A5DF05 /* LaunchRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LaunchRouter.swift; path = Router/LaunchRouter.swift; sourceTree = "<group>"; };
 		26FAFDA91E671B0600609139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		26FAFDAB1E6721FE00609139 /* RecognizedArguments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecognizedArguments.swift; path = IO/RecognizedArguments.swift; sourceTree = "<group>"; };
+		AF0EB4B61E69D96D0037BBCF /* JSONTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONTypes.swift; sourceTree = "<group>"; };
+		AF0EB4B81E69E1A10037BBCF /* Dictionary+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+JSON.swift"; sourceTree = "<group>"; };
 		AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CamelCase.swift"; sourceTree = "<group>"; };
 		AF5A59D81E69C110009F531E /* Character+Uppercase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Character+Uppercase.swift"; sourceTree = "<group>"; };
 		AF5C0AE71E69CEAB00CBC93E /* String+Uppercase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Uppercase.swift"; sourceTree = "<group>"; };
@@ -101,6 +105,7 @@
 			children = (
 				263781A81E65C79400BE6706 /* JSONToSwiftError.swift */,
 				263781AA1E65C87000BE6706 /* JSONCollection.swift */,
+				AF0EB4B61E69D96D0037BBCF /* JSONTypes.swift */,
 				263781AE1E65C97600BE6706 /* JSONInteractor.swift */,
 				263781B21E65DE9C00BE6706 /* StringInteractor.swift */,
 				263781B01E65DC8900BE6706 /* JSONStringProvider.swift */,
@@ -130,6 +135,7 @@
 		AF5A59D51E69BFD0009F531E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AF0EB4B81E69E1A10037BBCF /* Dictionary+JSON.swift */,
 				AF5C0AE91E69D17500CBC93E /* String+Filtering.swift */,
 				AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */,
 				AF5C0AE71E69CEAB00CBC93E /* String+Uppercase.swift */,
@@ -197,6 +203,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF0EB4B91E69E1A10037BBCF /* Dictionary+JSON.swift in Sources */,
 				263781B11E65DC8900BE6706 /* JSONStringProvider.swift in Sources */,
 				2637819E1E65B71500BE6706 /* main.swift in Sources */,
 				26FA93221E674F5C00A5DF05 /* DataRouter.swift in Sources */,
@@ -206,6 +213,7 @@
 				263781AF1E65C97600BE6706 /* JSONInteractor.swift in Sources */,
 				263781A71E65C67500BE6706 /* IOWrapper.swift in Sources */,
 				26FAFDAC1E6721FE00609139 /* RecognizedArguments.swift in Sources */,
+				AF0EB4B71E69D96D0037BBCF /* JSONTypes.swift in Sources */,
 				26FA93241E67531800A5DF05 /* LaunchRouter.swift in Sources */,
 				AF5A59D91E69C110009F531E /* Character+Uppercase.swift in Sources */,
 				AF5C0AE81E69CEAB00CBC93E /* String+Uppercase.swift in Sources */,
