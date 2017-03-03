@@ -65,9 +65,9 @@ extension JSONToSwift {
         strings.append(contentsOf: [.close, .newLine, .close])
         if generateEquatable {
             strings.append(contentsOf: [.newLine, .newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
-            for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
+            for (index, key) in collection.equatableItems.map({ $0.key }).enumerated() {
                 strings.append(.equatableComparison(name: key))
-                if index < collection.nonNullItems.count - 1 {
+                if index < collection.equatableItems.count - 1 {
                     strings.append(.andOperator)
                     strings.append(.newLine)
                 }

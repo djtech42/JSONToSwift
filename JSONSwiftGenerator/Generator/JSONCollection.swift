@@ -12,12 +12,12 @@ struct JSONCollection<Element> {
     fileprivate var contents: [String: Element] = [:]
     
     init(with key: String, element: Element) {
-        add(element, for: key)
+        add(element, for: key.camelCased)
     }
     
     init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Element) {
         for (key, value) in sequence {
-            add(value, for: key)
+            add(value, for: key.camelCased)
         }
     }
 }
@@ -81,8 +81,8 @@ extension JSONCollection: Collection {
 }
 
 extension JSONCollection {
-    var nonNullItems: [(key: String, value: Element)]  {
-        return contents.filter { $0.value is Array<Any> || $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool }
+    var equatableItems: [(key: String, value: Element)]  {
+        return contents.filter { $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool }
     }
     
     var arrayItems: [(key: String, value: Element)] {
@@ -121,18 +121,16 @@ extension JSONCollection {
     }
     
     var objectItemPropertyStrings: [String] {
-        return dictionaryItems.map { "let \($0.key): \($0.key.capitalized)JSON" }
+        return dictionaryItems.map { "let \($0.key): \($0.key.typeCamelCased)JSON" }
     }
     
     var objectItemInitStrings: [String] {
-        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\nself.\($0.key) = \($0.key.capitalized)JSON(with: \($0.key)Object)" }
+        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\nself.\($0.key) = \($0.key.typeCamelCased)JSON(with: \($0.key)Object)" }
     }
     
     var objectItemStructNames: [String] {
         return dictionaryItems.map { object in
-            let nameString = object.key.capitalized
-            let name = nameString.replacingOccurrences(of: " ", with: "")
-            return "\(name)JSON"
+            return "\(object.key.typeCamelCased)JSON"
         }
     }
     
