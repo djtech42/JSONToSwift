@@ -27,11 +27,20 @@ extension String {
         return removingOccurrences(of: " ")
     }
     
+    var prependedUnderscoreIfStartingWithDigit: String {
+        if Int(String(describing: characters.first!)) != nil {
+            return "_\(self)"
+        }
+        else {
+            return self
+        }
+    }
+    
     var formattedForSwiftPropertyName: String {
-        return camelCased.removingOccurrences(of: SwiftLanguage.disallowedPropertyNameCharacters)
+        return camelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedPropertyNameCharacters)
     }
     
     var formattedForSwiftTypeName: String {
-        return typeCamelCased.removingOccurrences(of: SwiftLanguage.disallowedTypeNameCharacters)
+        return typeCamelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedTypeNameCharacters)
     }
 }
