@@ -30,7 +30,7 @@ enum LaunchRouter {
         let objectName: String
         if RecognizedArguments.recognized(from: Input.flags).contains(.automaticRootName) {
             let filename = location.lastPathComponent
-            if filename != "" {
+            if !filename.isEmpty {
                 objectName = filename.removingOccurrences(of: ".json").formattedForSwiftTypeName
             }
             else {
