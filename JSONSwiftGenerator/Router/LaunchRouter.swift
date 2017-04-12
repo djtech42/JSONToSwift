@@ -25,9 +25,20 @@ enum LaunchRouter {
             throw JSONToSwiftError(message: "Invalid URL provided")
         }
         
+        let verbose: Bool = RecognizedArguments.recognized(from: Input.flags).contains(.verbose)
+        
         let objectName: String
         if RecognizedArguments.recognized(from: Input.flags).contains(.automaticRootName) {
-            objectName = location.lastPathComponent.removingOccurrences(of: ".json").formattedForSwiftTypeName
+            let filename = location.lastPathComponent
+            if filename != "" {
+                objectName = filename.removingOccurrences(of: ".json").formattedForSwiftTypeName
+            }
+            else {
+                if verbose {
+                    print("verbose: automatic root object name retrieval failed")
+                }
+                objectName = Input.getNameForObject()
+            }
         }
         else {
             objectName = Input.getNameForObject()
@@ -40,8 +51,6 @@ enum LaunchRouter {
         else {
             useEquatable = Input.getUseEquatable()
         }
-        
-        let verbose: Bool = RecognizedArguments.recognized(from: Input.flags).contains(.verbose)
         let converter = JSONToSwift(with: location, rootObjectName: objectName, generateEquatable: useEquatable, verbose: verbose)
         try converter.convert()
     }
