@@ -12,12 +12,12 @@ struct JSONCollection<Element> {
     fileprivate var contents: [String: Element] = [:]
     
     init(with key: String, element: Element) {
-        add(element, for: key)
+        add(element, for: key.formattedForSwiftPropertyName)
     }
     
     init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Element) {
         for (key, value) in sequence {
-            add(value, for: key)
+            add(value, for: key.formattedForSwiftPropertyName)
         }
     }
 }
@@ -81,8 +81,8 @@ extension JSONCollection: Collection {
 }
 
 extension JSONCollection {
-    var nonNullItems: [(key: String, value: Element)]  {
-        return contents.filter { $0.value is Array<Any> || $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool }
+    var equatableItems: [(key: String, value: Element)]  {
+        return contents.filter { $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] }
     }
     
     var arrayItems: [(key: String, value: Element)] {
@@ -113,15 +113,29 @@ extension JSONCollection {
 
 extension JSONCollection {
     var arrayItemPropertyStrings: [String] {
-        return arrayItems.map { "let \($0.key): [Any]" }
+        var allArrayPropertyStrings: [String] = []
+        
+        allArrayPropertyStrings += arrayItems.filter({ !($0.value is [Double])  }).filter { $0.value is [Bool] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Bool]") }
+        allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]") }
+        allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]") }
+        allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
+        
+        return allArrayPropertyStrings
     }
     
     var arrayItemInitStrings: [String] {
-        return arrayItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? [Any] ?? []" }
+        var allArrayInitStrings: [String] = []
+        
+        allArrayInitStrings += arrayItems.filter({ !($0.value is [Double])  }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Bool]", defaultValueString: "[]") }
+        allArrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Double]", defaultValueString: "[]") }
+        allArrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[String]", defaultValueString: "[]")}
+        allArrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Any]", defaultValueString: "[]") }
+        
+        return allArrayInitStrings
     }
     
     var objectItemPropertyStrings: [String] {
-        return dictionaryItems.map { "let \($0.key): \($0.key.capitalized)JSON" }
+        return dictionaryItems.map { SwiftLanguage.propertyString(name: $0.key, withType: $0.key.formattedForSwiftTypeName + "JSON") }
     }
     
     var objectItemInitStrings: [String] {
@@ -130,44 +144,40 @@ extension JSONCollection {
     
     var objectItemStructNames: [String] {
         return dictionaryItems.map { object in
-            let nameString = object.key.capitalized
-            let name = nameString.replacingOccurrences(of: " ", with: "")
-            return "\(name)JSON"
+            return "\(object.key.formattedForSwiftTypeName)JSON"
         }
     }
     
     var stringItemPropertyStrings: [String] {
-        return stringItems.map { "let \($0.key): String" }
+        return stringItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "String") }
     }
     
     var stringItemInitStrings: [String] {
-        return stringItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? String ?? \"\"" }
+        return stringItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "String", defaultValueString: "\"\"") }
     }
     
     var numberItemPropertyStrings: [String] {
-        return numberItems.map { "let \($0.key): Double" }
+        return numberItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Double") }
     }
     
     var numberItemInitStrings: [String] {
-        return numberItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as? Double ?? 0.0" }
+        return numberItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "Double", defaultValueString: "0.0") }
     }
     
     var boolItemPropertyStrings: [String] {
-        let mutableCopy: [String] = boolItems.filter({ !($0.value is Double)  }).map { $0.key }
-        return mutableCopy.map { "let \($0): Bool" }
+        return boolItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Bool") }
     }
     
     var boolItemInitStrings: [String] {
-        let mutableCopy: [String] = boolItems.filter({ !($0.value is Double)  }).map { $0.key }
-        return mutableCopy.map { "self.\($0) = dictionary[\"\($0)\"] as? Bool ?? false" }
+        return boolItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "Bool", defaultValueString: "false") }
     }
     
     var nullItemPropertyStrings: [String] {
-        return nullItems.map { "let \($0.key): Any?" }
+        return nullItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Any?") }
     }
     
     var nullItemInitStrings: [String] {
-        return nullItems.map { "self.\($0.key) = dictionary[\"\($0.key)\"] as Any" }
+        return nullItems.map { SwiftLanguage.initializerNonOptionalCast(name: $0.key, toType: "Any") }
     }
 }
 

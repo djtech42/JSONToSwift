@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct JSONInteractor {
+enum JSONInteractor {
     static func generateCollection(from json: Any) throws -> JSONCollection<Any> {
         let type = try JSONInteractor.rootType(from: json)
         let dictionaryObject: [String: Any]

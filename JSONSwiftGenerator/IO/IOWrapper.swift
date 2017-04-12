@@ -8,9 +8,14 @@
 
 import Foundation
 
-struct Input {
-    static var flags: [String] {
+enum Input {
+    static var arguments: [String] {
         return Array(CommandLine.arguments.dropFirst())
+    }
+    static var flags: [Character]? {
+        guard let existingHyphenArgument = arguments.first(where: { $0.characters.first == "-" }) else { return nil }
+        
+        return Array(existingHyphenArgument.characters.dropFirst())
     }
     
     static func getFilePath() -> DataRouter {
@@ -34,30 +39,27 @@ struct Input {
 
 extension Input {
     static func route(from arguments: [String]) -> DataRouter? {
-        var enteredArguments = arguments
+        let enteredArguments = arguments
         
-        guard enteredArguments.count > 0 else { return .none }
-        let firstArgument = enteredArguments.removeFirst()
-        if let url = URL(string: firstArgument) {
+        guard enteredArguments.count > 0, let fileArgument = enteredArguments.first(where: { $0.contains(".") }) else { return .none }
+        if let url = URL(string: fileArgument) {
             if url.host != nil { return .url(location: url) }
-            else { return .file(location: URL(fileURLWithPath: firstArgument)) }
+            else { return .file(location: URL(fileURLWithPath: fileArgument)) }
         }
         return .none
     }
 }
 
-struct Output {
+enum Output {
     static func printNewline() {
         print()
     }
     
     static func printCastWarning(for keys: [String]) {
-        for key in keys {
-            print("\(key) has a null value, so it was cast to Any? by default")
-        }
+        keys.forEach { print("\($0) has a null value, so it was cast to Any? by default") }
     }
     
-    static func printThatFileIsWritten() {
-        print("file written successfully")
+    static func printThatFileIsWritten(withName name: String) {
+        print("file \(name) written successfully")
     }
 }
