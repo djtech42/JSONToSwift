@@ -12,7 +12,7 @@ enum StringInteractor {
     case header(remoteURL: URL)
     case structName(name: String)
     case extensionName(name: String)
-    case newLine
+    case newLine(indentLevel: Int)
     case close
     case initializer
     case property(string: String)
@@ -29,7 +29,7 @@ extension StringInteractor: CustomStringConvertible {
         case .header(let url): return "//\n//    JSON to Swift Generated Model\n//    Code generator created by: Bren Konnagan\n//\n//    Created from: \(string(for: url))\n//    Generated on: \(timeStamp())\n"
         case .structName(let name): return "struct \(name) {"
         case .extensionName(let name): return "extension \(name): Equatable {"
-        case .newLine: return "\n"
+        case .newLine(let indentLevel): return "\n" + String(repeating: "\t", count: indentLevel)
         case .close: return "}"
         case .initializer: return "init(with dictionary: [String: Any]) {"
         case .property(let string): return string

@@ -55,24 +55,22 @@ extension JSONToSwift {
 
 extension JSONToSwift {
     fileprivate func string(from collection: JSONCollection<Any>) -> String {
-        var strings: [StringInteractor] = [.header(remoteURL: jsonPath), .newLine, .structName(name: rootObjectName)]
-        strings.append(.newLine)
+        var strings: [StringInteractor] = [.header(remoteURL: jsonPath), .newLine(indentLevel: 0), .structName(name: rootObjectName)]
         addPropertyStrings(in: &strings, from: collection)
-        strings.append(.newLine)
+        strings.append(.newLine(indentLevel: 1))
         strings.append(.initializer)
-        strings.append(.newLine)
         addInitializerDelclarations(in: &strings, from: collection)
-        strings.append(contentsOf: [.close, .newLine, .close])
+        strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 0), .close])
         if generateEquatable {
-            strings.append(contentsOf: [.newLine, .newLine, .extensionName(name: rootObjectName), .newLine, .equatableFunctionDeclaration(name: rootObjectName), .newLine, .equatableFunctionStart])
+            strings.append(contentsOf: [.newLine(indentLevel: 0), .newLine(indentLevel: 0), .extensionName(name: rootObjectName), .newLine(indentLevel: 1), .equatableFunctionDeclaration(name: rootObjectName), .newLine(indentLevel: 2), .equatableFunctionStart])
             for (index, key) in collection.nonNullItems.map({ $0.key }).enumerated() {
                 strings.append(.equatableComparison(name: key))
                 if index < collection.nonNullItems.count - 1 {
                     strings.append(.andOperator)
-                    strings.append(.newLine)
+                    strings.append(.newLine(indentLevel: 3))
                 }
             }
-            strings.append(contentsOf: [.newLine, .close, .newLine, .close])
+            strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 0), .close])
         }
         return strings.reduce("", { (string, interactor) -> String in
             return string + interactor.description
@@ -81,55 +79,60 @@ extension JSONToSwift {
     
     fileprivate func addPropertyStrings(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
         if collection.arrayItems.count > 0 {
-            strings.append(.newLine)
+            strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONStringProvider.array.comment))
-            strings.append(.newLine)
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
         }
         if collection.dictionaryItems.count > 0 {
-            strings.append(.newLine)
+            strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONStringProvider.dictionary.comment))
-            strings.append(.newLine)
             collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
         }
         if collection.stringItems.count > 0 {
-            strings.append(.newLine)
+            strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONStringProvider.string.comment))
-            strings.append(.newLine)
             collection.stringItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
         }
         if collection.numberItems.count > 0 {
-            strings.append(.newLine)
+            strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONStringProvider.number.comment))
-            strings.append(.newLine)
             collection.numberItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
         }
         if collection.boolItems.count > 0 {
-            strings.append(.newLine)
+            strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONStringProvider.bool.comment))
-            strings.append(.newLine)
             collection.boolItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
         }
         if collection.nullItems.count > 0 {
-            strings.append(.newLine)
+            strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONStringProvider.null.comment))
-            strings.append(.newLine)
             collection.nullItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
         }
     }
     
     fileprivate func appendProperty(string: String, stringsCollection: inout [StringInteractor]) {
+        stringsCollection.append(.newLine(indentLevel: 1))
         stringsCollection.append(.property(string: string))
-        stringsCollection.append(.newLine)
+    }
+    
+    fileprivate func appendPropertyAssignment(string: String, stringsCollection: inout [StringInteractor]) {
+        stringsCollection.append(.newLine(indentLevel: 2))
+        stringsCollection.append(.property(string: string))
     }
     
     fileprivate func addInitializerDelclarations(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
-        collection.arrayItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
-        collection.objectItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
-        collection.stringItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
-        collection.numberItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
-        collection.boolItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
-        collection.nullItemInitStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+        collection.arrayItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+        collection.objectItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+        collection.stringItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+        collection.numberItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+        collection.boolItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+        collection.nullItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
     }
 }
 
