@@ -87,7 +87,7 @@ extension JSONToSwift {
         strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 0), .close])
         if generateEquatable {
             strings.append(contentsOf: [.newLine(indentLevel: 0), .newLine(indentLevel: 0), .extensionName(name: rootObjectName), .newLine(indentLevel: 1), .equatableFunctionDeclaration(name: rootObjectName), .newLine(indentLevel: 2), .equatableFunctionStart])
-            collection.equatableItems.map({ $0.key }).enumerated().forEach { (index, key) in
+            collection.equatableItems.map({ $0.key }).enumerated().forEach { let (index, key) = $0;
             strings.append(.equatableComparison(name: key))
             if index < collection.equatableItems.count - 1 {
                 strings.append(.andOperator)
@@ -163,7 +163,7 @@ extension JSONToSwift {
 extension JSONToSwift {
     fileprivate func createSubObjects(from collection: JSONCollection<Any>) throws {
         var jsonToSwiftGenerators: [JSONToSwift] = []
-        collection.objectItemStructNames.enumerated().forEach { (index, name) in
+        collection.objectItemStructNames.enumerated().forEach { let (index, name) = $0;
             let dictionary = collection.dictionaryItems[index].value as? [String: Any] ?? [:]
             let newCollection = JSONCollection(dictionary)
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
