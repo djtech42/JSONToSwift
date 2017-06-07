@@ -135,16 +135,16 @@ extension JSONCollection {
     }
     
     var objectItemPropertyStrings: [String] {
-        return dictionaryItems.map { SwiftLanguage.propertyString(name: $0.key, withType: $0.key.formattedForSwiftTypeName + "JSON") }
+        return dictionaryItems.map { SwiftLanguage.propertyString(name: $0.key, withType: $0.key.formattedForSwiftTypeName) }
     }
     
     var objectItemInitStrings: [String] {
-        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\n\t\tself.\($0.key) = \($0.key.capitalized)JSON(with: \($0.key)Object)" }
+        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\n\t\tself.\($0.key) = \($0.key.capitalized)(with: \($0.key)Object)" }
     }
     
     var objectItemStructNames: [String] {
         return dictionaryItems.map { object in
-            return "\(object.key.formattedForSwiftTypeName)JSON"
+            return "\(object.key.formattedForSwiftTypeName)"
         }
     }
     
