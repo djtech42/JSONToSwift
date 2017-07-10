@@ -87,7 +87,7 @@ extension JSONToSwift {
             addInitializerDelclarations(in: &strings, from: collection)
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
         }
-        if SwiftLanguage.globalVersionSetting == .four && !collection.originalKeys.isEmpty {
+        if SwiftLanguage.globalVersionSetting == .four && collection.containsBadKey {
             strings.append(contentsOf: [.newLine(indentLevel: 1), .codingKeysEnum])
             for (badKey, _) in collection.originalKeys {
                 strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(name: badKey)])
