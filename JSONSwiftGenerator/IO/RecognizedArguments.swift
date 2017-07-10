@@ -11,6 +11,7 @@ import Foundation
 enum RecognizedArguments: String {
     case equatable
     case automaticRootName
+    case legacy
     case verbose
     
     static func recognized(from flags: [Character]?) -> [RecognizedArguments] {
@@ -20,6 +21,9 @@ enum RecognizedArguments: String {
         
         if existingFlags.contains("e") {
             recognized.append(.equatable)
+        }
+        if existingFlags.contains("l") {
+            recognized.append(.legacy)
         }
         if existingFlags.contains("n") {
             recognized.append(.automaticRootName)

@@ -81,13 +81,13 @@ extension JSONToSwift {
     fileprivate func string(from collection: JSONCollection<Any>) -> String {
         var strings: [FileTextBlock] = [.header(remoteURL: jsonPath), .newLine(indentLevel: 0), .structName(name: rootObjectName)]
         addPropertyStrings(in: &strings, from: collection)
-        if globalSwiftVersionSetting == .three {
+        if SwiftLanguage.globalVersionSetting == .three {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.initializer)
             addInitializerDelclarations(in: &strings, from: collection)
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
         }
-        if globalSwiftVersionSetting == .four && !collection.originalKeys.isEmpty {
+        if SwiftLanguage.globalVersionSetting == .four && !collection.originalKeys.isEmpty {
             strings.append(contentsOf: [.newLine(indentLevel: 1), .codingKeysEnum])
             for (badKey, _) in collection.originalKeys {
                 strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(name: badKey)])

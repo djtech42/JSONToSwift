@@ -8,13 +8,13 @@
 
 import Foundation
 
-let globalSwiftVersionSetting: SwiftLanguage.Version = .four
-
 enum SwiftLanguage {
     enum Version: Int {
         case three = 3
         case four = 4
     }
+    
+    static var globalVersionSetting: SwiftLanguage.Version = .four
     
     static var disallowedPropertyNameCharacters: [Character] = [" ", "$", "-"]
     static var disallowedTypeNameCharacters: [Character] = [" ", "$", "-"]
@@ -39,7 +39,7 @@ enum SwiftLanguage {
     }
     enum ConformingProtocol {
         static var encodingAndDecoding: String {
-            switch globalSwiftVersionSetting {
+            switch SwiftLanguage.globalVersionSetting {
             case .four: return ": Codable"
             default: return ""
             }

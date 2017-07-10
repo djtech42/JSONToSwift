@@ -28,7 +28,9 @@ enum LaunchRouter {
         let verbose: Bool = RecognizedArguments.recognized(from: Input.flags).contains(.verbose)
         
         let objectName: String
-        if RecognizedArguments.recognized(from: Input.flags).contains(.automaticRootName) {
+        let recognizedArguments = RecognizedArguments.recognized(from: Input.flags)
+        
+        if recognizedArguments.contains(.automaticRootName) {
             let filename = location.lastPathComponent
             if !filename.isEmpty {
                 objectName = filename.removingOccurrences(of: ".json").formattedForSwiftTypeName
@@ -45,11 +47,15 @@ enum LaunchRouter {
         }
         
         let useEquatable: Bool
-        if RecognizedArguments.recognized(from: Input.flags).contains(.equatable) {
+        if recognizedArguments.contains(.equatable) {
             useEquatable = true
         }
         else {
             useEquatable = Input.getUseEquatable()
+        }
+        
+        if recognizedArguments.contains(.legacy) {
+            SwiftLanguage.globalVersionSetting = .three
         }
         let converter = JSONToSwift(with: location, rootObjectName: objectName, generateEquatable: useEquatable, verbose: verbose)
         try converter.convert()
