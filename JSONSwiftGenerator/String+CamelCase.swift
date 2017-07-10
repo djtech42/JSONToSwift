@@ -32,9 +32,9 @@ extension String {
     private func camelCasedLowercase() -> String {
         let firstCharacter, restOfString: String
         
-        if characters.contains(" ") {
+        if characters.contains(" ") || characters.contains("_") {
             firstCharacter = substring(to: index(startIndex, offsetBy: 1))
-            let capitalizedWithoutSpaces = capitalized.removedSpaces
+            let capitalizedWithoutSpaces = replacedUnderscoresWithSpaces.capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
         } else {
             firstCharacter = substring(to: lowercased().index(startIndex, offsetBy: 1))
@@ -47,9 +47,9 @@ extension String {
     private func camelCasedUppercase() -> String {
         let firstCharacter, restOfString: String
         
-        if characters.contains(" ") {
+        if characters.contains(" ") || characters.contains("_") {
             firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
-            let capitalizedWithoutSpaces = capitalized.removedSpaces
+            let capitalizedWithoutSpaces = replacedUnderscoresWithSpaces.capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
         } else {
             firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))

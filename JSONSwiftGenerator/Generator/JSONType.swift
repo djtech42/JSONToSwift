@@ -1,5 +1,5 @@
 //
-//  JSONStringProvider.swift
+//  JSONType.swift
 //  JSONSwiftGenerator
 //
 //  Created by Brenden Konnagan on 2/28/17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum JSONStringProvider {
+enum JSONType {
     case array
     case dictionary
     case string
@@ -17,7 +17,7 @@ enum JSONStringProvider {
     case null
 }
 
-extension JSONStringProvider {
+extension JSONType {
     var comment: String {
         let specificString: String
         switch self {

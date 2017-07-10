@@ -79,12 +79,26 @@ extension JSONToSwift {
 
 extension JSONToSwift {
     fileprivate func string(from collection: JSONCollection<Any>) -> String {
-        var strings: [StringInteractor] = [.header(remoteURL: jsonPath), .newLine(indentLevel: 0), .structName(name: rootObjectName)]
+        var strings: [FileTextBlock] = [.header(remoteURL: jsonPath), .newLine(indentLevel: 0), .structName(name: rootObjectName)]
         addPropertyStrings(in: &strings, from: collection)
-        strings.append(.newLine(indentLevel: 1))
-        strings.append(.initializer)
-        addInitializerDelclarations(in: &strings, from: collection)
-        strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 0), .close])
+        if globalSwiftVersionSetting == .three {
+            strings.append(.newLine(indentLevel: 1))
+            strings.append(.initializer)
+            addInitializerDelclarations(in: &strings, from: collection)
+            strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
+        }
+        if globalSwiftVersionSetting == .four && !collection.originalKeys.isEmpty {
+            strings.append(contentsOf: [.newLine(indentLevel: 1), .codingKeysEnum])
+            for (badKey, _) in collection.originalKeys {
+                strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(name: badKey)])
+            }
+            strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 1), .newLine(indentLevel: 1), .encodeFunctionDeclaration, .newLine(indentLevel: 2), .encodeFunctionContainerAssign, .newLine(indentLevel: 2)])
+            for (badKey, _) in collection.originalKeys {
+                strings.append(contentsOf: [.newLine(indentLevel: 2), .encodeFunctionStatement(propertyName: badKey)])
+            }
+            strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
+        }
+        strings.append(contentsOf: [.newLine(indentLevel: 0), .close])
         if generateEquatable {
             strings.append(contentsOf: [.newLine(indentLevel: 0), .newLine(indentLevel: 0), .extensionName(name: rootObjectName), .newLine(indentLevel: 1), .equatableFunctionDeclaration(name: rootObjectName), .newLine(indentLevel: 2), .equatableFunctionStart])
             collection.equatableItems.map({ $0.key }).enumerated().forEach { let (index, key) = $0;
@@ -101,56 +115,56 @@ extension JSONToSwift {
         })
     }
     
-    fileprivate func addPropertyStrings(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
+    fileprivate func addPropertyStrings(in strings: inout [FileTextBlock], from collection: JSONCollection<Any>) {
         if collection.arrayItems.count > 0 {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONStringProvider.array.comment))
+            strings.append(.comment(string: JSONType.array.comment))
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.dictionaryItems.count > 0 {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONStringProvider.dictionary.comment))
+            strings.append(.comment(string: JSONType.dictionary.comment))
             collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.stringItems.count > 0 {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONStringProvider.string.comment))
+            strings.append(.comment(string: JSONType.string.comment))
             collection.stringItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.numberItems.count > 0 {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONStringProvider.number.comment))
+            strings.append(.comment(string: JSONType.number.comment))
             collection.numberItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.boolItems.count > 0 {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONStringProvider.bool.comment))
+            strings.append(.comment(string: JSONType.bool.comment))
             collection.boolItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.nullItems.count > 0 {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONStringProvider.null.comment))
+            strings.append(.comment(string: JSONType.null.comment))
             collection.nullItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
     }
     
-    fileprivate func appendProperty(string: String, stringsCollection: inout [StringInteractor]) {
+    fileprivate func appendProperty(string: String, stringsCollection: inout [FileTextBlock]) {
         stringsCollection.append(.newLine(indentLevel: 1))
         stringsCollection.append(.property(string: string))
     }
     
-    fileprivate func appendPropertyAssignment(string: String, stringsCollection: inout [StringInteractor]) {
+    fileprivate func appendPropertyAssignment(string: String, stringsCollection: inout [FileTextBlock]) {
         stringsCollection.append(.newLine(indentLevel: 2))
         stringsCollection.append(.property(string: string))
     }
     
-    fileprivate func addInitializerDelclarations(in strings: inout [StringInteractor], from collection: JSONCollection<Any>) {
+    fileprivate func addInitializerDelclarations(in strings: inout [FileTextBlock], from collection: JSONCollection<Any>) {
         collection.arrayItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
         collection.objectItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
         collection.stringItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })

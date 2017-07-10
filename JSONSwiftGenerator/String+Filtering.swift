@@ -23,6 +23,10 @@ extension String {
         }
     }
     
+    var replacedUnderscoresWithSpaces: String {
+        return replacingOccurrences(of: "_", with: " ")
+    }
+    
     var removedSpaces: String {
         return removingOccurrences(of: " ")
     }
@@ -36,8 +40,16 @@ extension String {
         }
     }
     
+    var isFormattedForSwiftPropertyName: Bool {
+        return self == formattedForSwiftPropertyName
+    }
+    
     var formattedForSwiftPropertyName: String {
         return camelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedPropertyNameCharacters)
+    }
+    
+    var isFormattedForSwiftTypeName: Bool {
+        return self == formattedForSwiftTypeName
     }
     
     var formattedForSwiftTypeName: String {

@@ -10,13 +10,23 @@ import Foundation
 
 struct JSONCollection<Element> {
     fileprivate var contents: [String: Element] = [:]
+    var originalKeys: [String: Element] = [:]
+    var containsBadKey: Bool = false
     
     init(with key: String, element: Element) {
+        if !key.isFormattedForSwiftPropertyName {
+            containsBadKey = true
+        }
+        originalKeys[key] = element
         add(element, for: key.formattedForSwiftPropertyName)
     }
     
     init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Element) {
         for (key, value) in sequence {
+            if !key.isFormattedForSwiftPropertyName {
+                containsBadKey = true
+            }
+            originalKeys[key] = value
             add(value, for: key.formattedForSwiftPropertyName)
         }
     }
