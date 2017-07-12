@@ -100,7 +100,11 @@ extension JSONCollection {
     }
     
     var objectArrayItems: [(key: String, value: Element)] {
-        return contents.filter { $0.value is [Dictionary<String, Any>] }
+        return contents.filter {
+            guard let objectArray = $0.value as? [[String : Any]] else { return false }
+            
+            return objectArray.validateStructure()
+        }
     }
     
     var objectItems: [(key: String, value: Element)] {

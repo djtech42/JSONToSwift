@@ -18,6 +18,7 @@
 		26FA93221E674F5C00A5DF05 /* DataRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FA93211E674F5C00A5DF05 /* DataRouter.swift */; };
 		26FA93241E67531800A5DF05 /* LaunchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FA93231E67531800A5DF05 /* LaunchRouter.swift */; };
 		26FAFDAC1E6721FE00609139 /* RecognizedArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FAFDAB1E6721FE00609139 /* RecognizedArguments.swift */; };
+		378EF0D71F16AF5600EA2758 /* Array+StructureValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378EF0D61F16AF5600EA2758 /* Array+StructureValidation.swift */; };
 		AF0EB4BD1E69F2F90037BBCF /* SwiftLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0EB4BC1E69F2F90037BBCF /* SwiftLanguage.swift */; };
 		AF5A59D71E69BFDE009F531E /* String+CamelCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */; };
 		AF5A59D91E69C110009F531E /* Character+Case.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5A59D81E69C110009F531E /* Character+Case.swift */; };
@@ -51,6 +52,7 @@
 		26FA93231E67531800A5DF05 /* LaunchRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LaunchRouter.swift; path = Router/LaunchRouter.swift; sourceTree = "<group>"; };
 		26FAFDA91E671B0600609139 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		26FAFDAB1E6721FE00609139 /* RecognizedArguments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecognizedArguments.swift; path = IO/RecognizedArguments.swift; sourceTree = "<group>"; };
+		378EF0D61F16AF5600EA2758 /* Array+StructureValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+StructureValidation.swift"; sourceTree = "<group>"; };
 		AF0EB4BC1E69F2F90037BBCF /* SwiftLanguage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftLanguage.swift; sourceTree = "<group>"; };
 		AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CamelCase.swift"; sourceTree = "<group>"; };
 		AF5A59D81E69C110009F531E /* Character+Case.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Character+Case.swift"; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 		AF5A59D51E69BFD0009F531E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				378EF0D61F16AF5600EA2758 /* Array+StructureValidation.swift */,
 				AF5C0AE91E69D17500CBC93E /* String+Filtering.swift */,
 				AF5A59D61E69BFDE009F531E /* String+CamelCase.swift */,
 				AF5C0AE71E69CEAB00CBC93E /* String+Uppercase.swift */,
@@ -201,6 +204,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				378EF0D71F16AF5600EA2758 /* Array+StructureValidation.swift in Sources */,
 				263781B11E65DC8900BE6706 /* JSONType.swift in Sources */,
 				2637819E1E65B71500BE6706 /* main.swift in Sources */,
 				26FA93221E674F5C00A5DF05 /* DataRouter.swift in Sources */,
