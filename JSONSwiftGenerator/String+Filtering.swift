@@ -40,12 +40,21 @@ extension String {
         }
     }
     
+    var removedUnderscoreAtBeginning: String {
+        if first == "_" {
+            return String(self.dropFirst())
+        }
+        else {
+            return self
+        }
+    }
+    
     var isFormattedForSwiftPropertyName: Bool {
         return self == formattedForSwiftPropertyName
     }
     
     var formattedForSwiftPropertyName: String {
-        return camelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedPropertyNameCharacters)
+        return removedUnderscoreAtBeginning.camelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedPropertyNameCharacters)
     }
     
     var isFormattedForSwiftTypeName: Bool {
@@ -53,7 +62,7 @@ extension String {
     }
     
     var formattedForSwiftTypeName: String {
-        return typeCamelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedTypeNameCharacters)
+        return removedUnderscoreAtBeginning.typeCamelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedTypeNameCharacters)
     }
     
     var madeSingleFromPlural: String {
