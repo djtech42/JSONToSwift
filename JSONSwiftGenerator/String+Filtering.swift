@@ -57,6 +57,6 @@ extension String {
     }
     
     var madeSingleFromPlural: String {
-        return String(self.dropLast())
+        return self.last?.lowercased == "s" ? String(self.dropLast()) : self
     }
 }
