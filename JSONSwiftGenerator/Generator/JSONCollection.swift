@@ -99,11 +99,11 @@ extension JSONCollection {
         return contents.filter { $0.value is Array<Any> }
     }
     
-    var dictionaryArrayItems: [(key: String, value: Element)] {
+    var objectArrayItems: [(key: String, value: Element)] {
         return contents.filter { $0.value is [Dictionary<String, Any>] }
     }
     
-    var dictionaryItems: [(key: String, value: Element)] {
+    var objectItems: [(key: String, value: Element)] {
         return contents.filter { $0.value is Dictionary<String, Any> }
     }
     
@@ -132,7 +132,7 @@ extension JSONCollection {
         allArrayPropertyStrings += arrayItems.filter({ !($0.value is [Double])  }).filter { $0.value is [Bool] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Bool]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]") }
-        allArrayPropertyStrings += dictionaryArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\(String($0.key.dropLast()).formattedForSwiftTypeName)]") }
+        allArrayPropertyStrings += objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]") }
         allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Dictionary<String, Any>])}.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
         
         return allArrayPropertyStrings
@@ -144,28 +144,28 @@ extension JSONCollection {
         allArrayInitStrings += arrayItems.filter({ !($0.value is [Double])  }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Bool]", defaultValueString: "[]") }
         allArrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Double]", defaultValueString: "[]") }
         allArrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[String]", defaultValueString: "[]")}
-        allArrayInitStrings += dictionaryArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[\(String($0.key.dropLast()).formattedForSwiftTypeName)]", defaultValueString: "[]")}
+        allArrayInitStrings += objectArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]", defaultValueString: "[]")}
         allArrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Dictionary<String, Any>])}.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Any]", defaultValueString: "[]") }
         
         return allArrayInitStrings
     }
     
     var objectArrayItemStructNames: [String] {
-        return dictionaryArrayItems.map { array in
-            return String(array.key.dropLast()).formattedForSwiftTypeName
+        return objectArrayItems.map { array in
+            return array.key.madeSingleFromPlural.formattedForSwiftTypeName
         }
     }
     
     var objectItemPropertyStrings: [String] {
-        return dictionaryItems.map { SwiftLanguage.propertyString(name: $0.key, withType: $0.key.formattedForSwiftTypeName) }
+        return objectItems.map { SwiftLanguage.propertyString(name: $0.key, withType: $0.key.formattedForSwiftTypeName) }
     }
     
     var objectItemInitStrings: [String] {
-        return dictionaryItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\n\t\tself.\($0.key) = \($0.key.capitalized)(with: \($0.key)Object)" }
+        return objectItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\n\t\tself.\($0.key) = \($0.key.capitalized)(with: \($0.key)Object)" }
     }
     
     var objectItemStructNames: [String] {
-        return dictionaryItems.map { object in
+        return objectItems.map { object in
             return "\(object.key.formattedForSwiftTypeName)"
         }
     }

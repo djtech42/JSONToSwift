@@ -55,4 +55,8 @@ extension String {
     var formattedForSwiftTypeName: String {
         return typeCamelCased.prependedUnderscoreIfStartingWithDigit.removingOccurrences(of: SwiftLanguage.disallowedTypeNameCharacters)
     }
+    
+    var madeSingleFromPlural: String {
+        return String(self.dropLast())
+    }
 }

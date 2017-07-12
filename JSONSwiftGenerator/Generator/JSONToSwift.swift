@@ -122,7 +122,7 @@ extension JSONToSwift {
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
-        if collection.dictionaryItems.count > 0 {
+        if collection.objectItems.count > 0 {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.dictionary.comment))
             collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
@@ -178,14 +178,14 @@ extension JSONToSwift {
     fileprivate func createSubObjects(from collection: JSONCollection<Any>) throws {
         var jsonToSwiftGenerators: [JSONToSwift] = []
         collection.objectItemStructNames.enumerated().forEach { let (index, name) = $0;
-            let dictionary = collection.dictionaryItems[index].value as? [String: Any] ?? [:]
+            let dictionary = collection.objectItems[index].value as? [String: Any] ?? [:]
             let newCollection = JSONCollection(dictionary)
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
             let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
             jsonToSwiftGenerators.append(generator)
         }
         collection.objectArrayItemStructNames.enumerated().forEach { let (index, name) = $0;
-            let dictionaryArray = collection.dictionaryArrayItems[index].value as? [[String: Any]] ?? [[:]]
+            let dictionaryArray = collection.objectArrayItems[index].value as? [[String: Any]] ?? [[:]]
             guard let existingDictionary = dictionaryArray.first else { return }
             
             let newCollection = JSONCollection(existingDictionary)
