@@ -22,9 +22,8 @@ enum FileTextBlock {
     case encodeFunctionContainerAssign
     case encodeFunctionStatement(propertyName: String)
     case equatableFunctionDeclaration(name: String)
-    case equatableFunctionStart
     case equatableComparison(name: String)
-    case andOperator
+    case equatableFunctionEnd
     case comment(string: String)
 }
 
@@ -44,9 +43,8 @@ extension FileTextBlock: CustomStringConvertible {
         case .encodeFunctionContainerAssign: return "var container = encoder.container(keyedBy: CodingKeys.self)"
         case .encodeFunctionStatement(let name): return "try container.encode(\(name.formattedForSwiftPropertyName), forKey: .\(name.formattedForSwiftPropertyName))"
         case .equatableFunctionDeclaration(let name): return "\(SwiftLanguage.Keyword.static) \(SwiftLanguage.Keyword.func) ==(lhs: \(name), rhs: \(name)) -> Bool {"
-        case .equatableFunctionStart: return "return "
-        case .equatableComparison(let name): return "lhs.\(name) == rhs.\(name)"
-        case .andOperator: return " && "
+        case .equatableComparison(let name): return "guard lhs.\(name) == rhs.\(name) else { return false }"
+        case .equatableFunctionEnd: return "return true"
         case .comment(let string): return string
         }
     }

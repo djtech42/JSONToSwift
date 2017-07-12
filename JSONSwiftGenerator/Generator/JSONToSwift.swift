@@ -100,15 +100,12 @@ extension JSONToSwift {
         }
         strings.append(contentsOf: [.newLine(indentLevel: 0), .close])
         if generateEquatable {
-            strings.append(contentsOf: [.newLine(indentLevel: 0), .newLine(indentLevel: 0), .extensionName(name: rootObjectName), .newLine(indentLevel: 1), .equatableFunctionDeclaration(name: rootObjectName), .newLine(indentLevel: 2), .equatableFunctionStart])
-            collection.equatableItems.map({ $0.key }).enumerated().forEach { let (index, key) = $0;
-            strings.append(.equatableComparison(name: key))
-            if index < collection.equatableItems.count - 1 {
-                strings.append(.andOperator)
-                strings.append(.newLine(indentLevel: 3))
-                }
+            strings.append(contentsOf: [.newLine(indentLevel: 0), .newLine(indentLevel: 0), .extensionName(name: rootObjectName), .newLine(indentLevel: 1), .equatableFunctionDeclaration(name: rootObjectName), .newLine(indentLevel: 2)])
+            collection.equatableItems.map({ $0.key }).forEach { key in
+                strings.append(.equatableComparison(name: key))
+                strings.append(.newLine(indentLevel: 2))
             }
-            strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 0), .close])
+            strings.append(contentsOf: [.newLine(indentLevel: 2), .equatableFunctionEnd, .newLine(indentLevel: 1), .close, .newLine(indentLevel: 0), .close])
         }
         return strings.reduce("", { (string, interactor) -> String in
             return string + interactor.description
