@@ -18,7 +18,7 @@ extension Array where Element == [String : Any] {
                 
                 if value is [String: Any] && !(firstObjectValue is [String: Any]) { return false }
                 if value is Array<Any> && !(firstObjectValue is Array<Any>) { return false }
-                if value is String && (firstObjectValue is String) { return false }
+                if value is String && !(firstObjectValue is String) { return false }
                 if value is Bool && !(firstObjectValue is Bool) { return false }
                 if value is Double && !(firstObjectValue is Double) { return false }
             }
