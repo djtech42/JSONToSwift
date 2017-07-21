@@ -28,7 +28,7 @@ extension DataRouter: Equatable {
         }
     }
     
-    static func ==(lhs: DataRouter, rhs: DataRouter) -> Bool {
+    static func == (lhs: DataRouter, rhs: DataRouter) -> Bool {
         return lhs.value == rhs.value
     }
 }

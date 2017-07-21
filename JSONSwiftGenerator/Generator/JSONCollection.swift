@@ -63,7 +63,7 @@ extension JSONCollection: Sequence {
     func makeIterator() -> Iterator {
         var existingIterator = contents.makeIterator()
         return AnyIterator {
-            return existingIterator.next()
+            existingIterator.next()
         }
     }
 }
@@ -85,18 +85,18 @@ extension JSONCollection: Collection {
         return (key: dictionaryElement.key, value: dictionaryElement.value)
     }
     
-    func index(after i: Index) -> Index {
-        return contents.index(after: i)
+    func index(after otherIndex: Index) -> Index {
+        return contents.index(after: otherIndex)
     }
 }
 
 extension JSONCollection {
-    var equatableItems: [(key: String, value: Element)]  {
-        return contents.filter { $0.value is Dictionary<String, Any> || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] || $0.value is [Dictionary<String, Any>] }
+    var equatableItems: [(key: String, value: Element)] {
+        return contents.filter { $0.value is [String : Any] || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] || $0.value is [[String : Any]] }
     }
     
     var arrayItems: [(key: String, value: Element)] {
-        return contents.filter { $0.value is Array<Any> }
+        return contents.filter { $0.value is [Any] }
     }
     
     var objectArrayItems: [(key: String, value: Element)] {
@@ -108,7 +108,7 @@ extension JSONCollection {
     }
     
     var objectItems: [(key: String, value: Element)] {
-        return contents.filter { $0.value is Dictionary<String, Any> }
+        return contents.filter { $0.value is [String : Any] }
     }
     
     var stringItems: [(key: String, value: Element)] {
@@ -120,12 +120,12 @@ extension JSONCollection {
     }
     
     var boolItems: [(key: String, value: Element)] {
-        let mutableCopy = contents.filter({ !($0.value is Double)  })
+        let mutableCopy = contents.filter({ !($0.value is Double) })
         return mutableCopy.filter { $0.value is Bool }
     }
     
     var nullItems: [(key: String, value: Element)] {
-        return contents.filter { !($0.value is Array<Any>) && !($0.value is Dictionary<String, Any>) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
+        return contents.filter { !($0.value is [Any]) && !($0.value is [String : Any]) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
     }
 }
 
@@ -133,11 +133,11 @@ extension JSONCollection {
     var arrayItemPropertyStrings: [String] {
         var allArrayPropertyStrings: [String] = []
         
-        allArrayPropertyStrings += arrayItems.filter({ !($0.value is [Double])  }).filter { $0.value is [Bool] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Bool]") }
+        allArrayPropertyStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Bool]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]") }
         allArrayPropertyStrings += objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]") }
-        allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Dictionary<String, Any>])}.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
+        allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [[String : Any]]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
         
         return allArrayPropertyStrings
     }
@@ -145,19 +145,17 @@ extension JSONCollection {
     var arrayItemInitStrings: [String] {
         var allArrayInitStrings: [String] = []
         
-        allArrayInitStrings += arrayItems.filter({ !($0.value is [Double])  }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Bool]", defaultValueString: "[]") }
+        allArrayInitStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Bool]", defaultValueString: "[]") }
         allArrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Double]", defaultValueString: "[]") }
-        allArrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[String]", defaultValueString: "[]")}
-        allArrayInitStrings += objectArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]", defaultValueString: "[]")}
-        allArrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Dictionary<String, Any>])}.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Any]", defaultValueString: "[]") }
+        allArrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[String]", defaultValueString: "[]") }
+        allArrayInitStrings += objectArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]", defaultValueString: "[]") }
+        allArrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [[String : Any]]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, toType: "[Any]", defaultValueString: "[]") }
         
         return allArrayInitStrings
     }
     
     var objectArrayItemStructNames: [String] {
-        return objectArrayItems.map { array in
-            return array.key.madeSingleFromPlural.formattedForSwiftTypeName
-        }
+        return objectArrayItems.map { $0.key.madeSingleFromPlural.formattedForSwiftTypeName }
     }
     
     var objectItemPropertyStrings: [String] {
@@ -169,9 +167,7 @@ extension JSONCollection {
     }
     
     var objectItemStructNames: [String] {
-        return objectItems.map { object in
-            return "\(object.key.formattedForSwiftTypeName)"
-        }
+        return objectItems.map { "\($0.key.formattedForSwiftTypeName)" }
     }
     
     var stringItemPropertyStrings: [String] {
@@ -206,9 +202,3 @@ extension JSONCollection {
         return nullItems.map { SwiftLanguage.initializerNonOptionalCast(name: $0.key, toType: "Any") }
     }
 }
-
-
-
-
-
-

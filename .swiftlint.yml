@@ -1,0 +1,38 @@
+disabled_rules:
+  - vertical_whitespace
+opt_in_rules:
+  - closure_end_indentation
+  - closure_spacing
+  - explicit_init
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - empty_count
+  - implicit_return
+  - implicitly_unwrapped_optional
+  - multiline_parameters
+  - nimble_operator
+  - no_extension_access_modifier
+  - number_separator
+  - object_literal
+  - operator_usage_whitespace
+  - overridden_super_call
+  - private_outlet
+  - prohibited_super_call
+  - redundant_nil_coalescing
+  - sorted_imports
+  - vertical_parameter_alignment_on_call
+empty_count: warning
+force_try: warning
+line_length:
+  warning: 200
+  error: 300
+cyclomatic_complexity:
+  warning: 4
+  error: 10
+trailing_whitespace:
+  ignores_empty_lines: true
+identifier_name:
+  min_length: 2
+statement_position:
+  statement_mode: uncuddled_else

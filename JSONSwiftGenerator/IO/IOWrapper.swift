@@ -43,8 +43,12 @@ extension Input {
         
         guard enteredArguments.count > 0, let fileArgument = enteredArguments.first(where: { $0.contains(".") }) else { return .none }
         if let url = URL(string: fileArgument) {
-            if url.host != nil { return .url(location: url) }
-            else { return .file(location: URL(fileURLWithPath: fileArgument)) }
+            if url.host != nil {
+                return .url(location: url)
+            }
+            else {
+                return .file(location: URL(fileURLWithPath: fileArgument))
+            }
         }
         return .none
     }

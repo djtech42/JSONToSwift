@@ -36,7 +36,8 @@ extension String {
             firstCharacter = substring(to: index(startIndex, offsetBy: 1))
             let capitalizedWithoutSpaces = replacedUnderscoresWithSpaces.capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
-        } else {
+        }
+        else {
             firstCharacter = substring(to: lowercased().index(startIndex, offsetBy: 1))
             restOfString = String(characters.dropFirst())
         }
@@ -51,7 +52,8 @@ extension String {
             firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
             let capitalizedWithoutSpaces = replacedUnderscoresWithSpaces.capitalized.removedSpaces
             restOfString = String(capitalizedWithoutSpaces.characters.dropFirst())
-        } else {
+        }
+        else {
             firstCharacter = lowercased().substring(to: index(startIndex, offsetBy: 1))
             restOfString = String(characters.dropFirst())
         }

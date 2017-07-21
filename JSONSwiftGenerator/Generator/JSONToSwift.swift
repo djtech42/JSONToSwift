@@ -11,7 +11,7 @@ import Foundation
 struct JSONToSwift {
     fileprivate let jsonPath: URL
     fileprivate let rootObjectName: String
-    let rootFolderName:  String?
+    let rootFolderName: String?
     fileprivate let generateEquatable: Bool
     let subObject: JSONCollection<Any>?
     let verbose: Bool
@@ -41,7 +41,7 @@ struct JSONToSwift {
         if verbose {
             print("verbose: data serialized from \(rootObjectName) JSON\t\(elapsedTime)")
         }
-        let collection = try JSONInteractor.generateCollection(from: json)
+        guard let collection = try JSONInteractor.generateCollection(from: json) else { return }
         if verbose {
             print("verbose: \(rootObjectName) serialization converted to Swift collection\t\(elapsedTime)")
         }
@@ -174,14 +174,18 @@ extension JSONToSwift {
 extension JSONToSwift {
     fileprivate func createSubObjects(from collection: JSONCollection<Any>) throws {
         var jsonToSwiftGenerators: [JSONToSwift] = []
-        collection.objectItemStructNames.enumerated().forEach { let (index, name) = $0;
+        collection.objectItemStructNames.enumerated().forEach {
+            let (index, name) = $0
+            
             let dictionary = collection.objectItems[index].value as? [String: Any] ?? [:]
             let newCollection = JSONCollection(dictionary)
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
             let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
             jsonToSwiftGenerators.append(generator)
         }
-        collection.objectArrayItemStructNames.enumerated().forEach { let (index, name) = $0;
+        collection.objectArrayItemStructNames.enumerated().forEach {
+            let (index, name) = $0
+            
             let dictionaryArray = collection.objectArrayItems[index].value as? [[String: Any]] ?? [[:]]
             guard let existingDictionary = dictionaryArray.first else { return }
             

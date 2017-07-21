@@ -9,16 +9,18 @@
 import Foundation
 
 enum JSONInteractor {
-    static func generateCollection(from json: Any) throws -> JSONCollection<Any> {
+    static func generateCollection(from json: Any) throws -> JSONCollection<Any>? {
         let type = try JSONInteractor.rootType(from: json)
         let dictionaryObject: [String: Any]
-        if type == .array {
-            let jsonArray = json as! [Any]
+        switch type {
+        case .array:
+            guard let jsonArray = json as? [Any] else { return nil }
             dictionaryObject = JSONInteractor.convertToDictionary(from: jsonArray)
-        } else {
-            let jsonDictionary = json as! [String: Any]
+        case .dictionary:
+            guard let jsonDictionary = json as? [String : Any] else { return nil }
             dictionaryObject = jsonDictionary
         }
+        
         return JSONCollection(dictionaryObject)
     }
 }

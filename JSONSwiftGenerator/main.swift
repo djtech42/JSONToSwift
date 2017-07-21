@@ -10,7 +10,8 @@ import Foundation
 
 do {
     try LaunchRouter.run()
-} catch {
+}
+catch {
     let errorString = String(describing: error)
     print("*** Error: \(errorString)")
 }
