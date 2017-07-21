@@ -49,7 +49,7 @@ struct JSONToSwift {
     }
     
     fileprivate func convert(collection: JSONCollection<Any>) throws {
-        if collection.nullItems.count > 0 {
+        if collection.nullItems.isNotEmpty {
             Output.printNewline()
             Output.printCastWarning(for: collection.nullItems.map({ $0.key }))
         }
@@ -113,37 +113,37 @@ extension JSONToSwift {
     }
     
     fileprivate func addPropertyStrings(in strings: inout [FileTextBlock], from collection: JSONCollection<Any>) {
-        if collection.arrayItems.count > 0 {
+        if collection.arrayItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.array.comment))
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
-        if collection.objectItems.count > 0 {
+        if collection.objectItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.dictionary.comment))
             collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
-        if collection.stringItems.count > 0 {
+        if collection.stringItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.string.comment))
             collection.stringItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
-        if collection.numberItems.count > 0 {
+        if collection.numberItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.number.comment))
             collection.numberItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
-        if collection.boolItems.count > 0 {
+        if collection.boolItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.bool.comment))
             collection.boolItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
-        if collection.nullItems.count > 0 {
+        if collection.nullItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.null.comment))
             collection.nullItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
@@ -205,7 +205,7 @@ extension JSONToSwift {
         if let createFolderWithName = rootFolderName {
             folderName = createFolderWithName + " Sub Objects"
             let newURL = desktopPath.appendingPathComponent(folderName!, isDirectory: true)
-            try! FileManager.default.createDirectory(at: newURL, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(at: newURL, withIntermediateDirectories: true, attributes: nil)
         }
         let fileWithSubdirectory = folderName != nil ? "\(folderName!)/\(rootObjectName).swift" : "\(rootObjectName).swift"
         let filePath = desktopPath.appendingPathComponent(fileWithSubdirectory)

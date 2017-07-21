@@ -32,12 +32,8 @@ extension String {
     }
     
     var prependedUnderscoreIfStartingWithDigit: String {
-        if Int(String(describing: characters.first!)) != nil {
-            return "_\(self)"
-        }
-        else {
-            return self
-        }
+        guard let existingFirstCharacter = characters.first, Int(String(describing: existingFirstCharacter)) != nil else { return self }
+        return "_\(self)"
     }
     
     var removedUnderscoreAtBeginning: String {
