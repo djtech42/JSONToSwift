@@ -10,7 +10,7 @@ import Foundation
 
 extension Array where Element == [String : Any] {
     func validateStructure() -> Bool {
-        let firstObject = self[0]
+        guard let firstObject = self.first else { return false }
         
         for object in self.dropFirst() {
             for (key, value) in object {

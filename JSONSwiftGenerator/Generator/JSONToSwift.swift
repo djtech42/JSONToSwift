@@ -99,7 +99,7 @@ extension JSONToSwift {
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
         }
         strings.append(contentsOf: [.newLine(indentLevel: 0), .close])
-        if generateEquatable {
+        if generateEquatable && collection.equatableItems.isNotEmpty {
             strings.append(contentsOf: [.newLine(indentLevel: 0), .newLine(indentLevel: 0), .extensionName(name: rootObjectName), .newLine(indentLevel: 1), .equatableFunctionDeclaration(name: rootObjectName), .newLine(indentLevel: 2)])
             collection.equatableItems.map({ $0.key }).forEach { key in
                 strings.append(.equatableComparison(name: key))
