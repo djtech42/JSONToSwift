@@ -26,7 +26,7 @@ empty_count: warning
 force_try: warning
 line_length:
   warning: 200
-  error: 300
+  error: 400
 cyclomatic_complexity:
   warning: 4
   error: 10
