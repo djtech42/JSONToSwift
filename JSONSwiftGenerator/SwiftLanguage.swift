@@ -22,11 +22,14 @@ enum SwiftLanguage {
     static func propertyString(name: String, withType type: String) -> String {
         return "let \(name): \(type)"
     }
-    static func initializerWithDefaultValueCast(name: String, toType type: String, defaultValueString: String) -> String {
-        return "self.\(name) = dictionary[\"\(name)\"] as? \(type) ?? \(defaultValueString)"
+    static func initializer(name: String) -> String {
+        return "self.\(name) = dictionary[\"\(name)\"]"
     }
     static func initializerNonOptionalCast(name: String, toType type: String) -> String {
-        return "self.\(name) = dictionary[\"\(name)\"] as \(type)"
+        return "\(initializer(name: name)) as \(type)"
+    }
+    static func initializerWithDefaultValueCast(name: String, toType type: String, defaultValueString: String) -> String {
+        return "\(initializer(name: name)) as? \(type) ?? \(defaultValueString)"
     }
     
     enum Keyword {

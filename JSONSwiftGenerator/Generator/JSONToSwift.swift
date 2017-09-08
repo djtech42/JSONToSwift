@@ -162,11 +162,36 @@ extension JSONToSwift {
     }
     
     fileprivate func addInitializerDelclarations(in strings: inout [FileTextBlock], from collection: JSONCollection<Any>) {
-        collection.arrayItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
-        collection.objectItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
-        collection.stringItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
-        collection.numberItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
-        collection.boolItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+        if collection.arrayItemInitStrings.isNotEmpty {
+            collection.arrayItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 2))
+        }
+        if collection.objectArrayInitStrings.isNotEmpty {
+            collection.objectArrayInitStrings.forEach({
+                appendPropertyAssignment(string: $0, stringsCollection: &strings)
+                strings.append(.newLine(indentLevel: 2))
+            })
+            strings.append(.newLine(indentLevel: 2))
+        }
+        if collection.objectItemInitStrings.isNotEmpty {
+            collection.objectItemInitStrings.forEach({
+                appendPropertyAssignment(string: $0, stringsCollection: &strings)
+                strings.append(.newLine(indentLevel: 2))
+            })
+            strings.append(.newLine(indentLevel: 2))
+        }
+        if collection.stringItemInitStrings.isNotEmpty {
+            collection.stringItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 2))
+        }
+        if collection.numberItemInitStrings.isNotEmpty {
+            collection.numberItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 2))
+        }
+        if collection.boolItemInitStrings.isNotEmpty {
+            collection.boolItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 2))
+        }
         collection.nullItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
     }
 }
