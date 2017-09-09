@@ -8,13 +8,13 @@
 
 import Foundation
 
-struct JSONCollection<Element> {
-    fileprivate var contents: [String : Element] = [:]
-    var originalKeys: [String : Element] = [:]
+struct JSONCollection {
+    fileprivate var contents: [String : Any] = [:]
+    var originalKeys: [String : Any] = [:]
     var swiftToOriginalKeyMapping: [String : String] = [:]
     var containsBadKey: Bool = false
     
-    init(with key: String, element: Element) {
+    init(with key: String, element: Any) {
         if !key.isFormattedForSwiftPropertyName {
             containsBadKey = true
         }
@@ -26,7 +26,7 @@ struct JSONCollection<Element> {
         add(element, for: fixedKey)
     }
     
-    init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Element) {
+    init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Any) {
         for (key, value) in sequence {
             if !key.isFormattedForSwiftPropertyName {
                 containsBadKey = true
@@ -42,7 +42,7 @@ struct JSONCollection<Element> {
 }
 
 extension JSONCollection {
-    mutating func add(_ element: Element, for key: String) {
+    mutating func add(_ element: Any, for key: String) {
         if !contents.contains(where: { $0.key == key }) {
             contents[key] = element
         }
@@ -61,13 +61,13 @@ extension JSONCollection: CustomStringConvertible {
 }
 
 extension JSONCollection: ExpressibleByDictionaryLiteral {
-    init(dictionaryLiteral elements: (String, Element)...) {
+    init(dictionaryLiteral elements: (String, Any)...) {
         self.init(elements.map { (key: $0.0, value: $0.1) })
     }
 }
 
 extension JSONCollection: Sequence {
-    typealias Iterator = AnyIterator<(value: Element, key: String)>
+    typealias Iterator = AnyIterator<(value: Any, key: String)>
     
     func makeIterator() -> Iterator {
         var existingIterator = contents.makeIterator()
@@ -78,7 +78,7 @@ extension JSONCollection: Sequence {
 }
 
 extension JSONCollection: Collection {
-    typealias Index = DictionaryIndex<String, Element>
+    typealias Index = DictionaryIndex<String, Any>
     
     var startIndex: Index {
         return contents.startIndex
@@ -100,15 +100,15 @@ extension JSONCollection: Collection {
 }
 
 extension JSONCollection {
-    var equatableItems: [(key: String, value: Element)] {
+    var equatableItems: [(key: String, value: Any)] {
         return contents.filter { $0.value is [String : Any] || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] || $0.value is [[String : Any]] }
     }
     
-    var arrayItems: [(key: String, value: Element)] {
+    var arrayItems: [(key: String, value: Any)] {
         return contents.filter { $0.value is [Any] }
     }
     
-    var objectArrayItems: [(key: String, value: Element)] {
+    var objectArrayItems: [(key: String, value: Any)] {
         return contents.filter {
             guard let objectArray = $0.value as? [[String : Any]] else { return false }
             
@@ -116,24 +116,24 @@ extension JSONCollection {
         }
     }
     
-    var objectItems: [(key: String, value: Element)] {
+    var objectItems: [(key: String, value: Any)] {
         return contents.filter { $0.value is [String : Any] }
     }
     
-    var stringItems: [(key: String, value: Element)] {
+    var stringItems: [(key: String, value: Any)] {
         return contents.filter { $0.value is String }
     }
     
-    var numberItems: [(key: String, value: Element)] {
+    var numberItems: [(key: String, value: Any)] {
         return contents.filter { $0.value is Double }
     }
     
-    var boolItems: [(key: String, value: Element)] {
+    var boolItems: [(key: String, value: Any)] {
         let mutableCopy = contents.filter({ !($0.value is Double) })
         return mutableCopy.filter { $0.value is Bool }
     }
     
-    var nullItems: [(key: String, value: Element)] {
+    var nullItems: [(key: String, value: Any)] {
         return contents.filter { !($0.value is [Any]) && !($0.value is [String : Any]) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
     }
 }

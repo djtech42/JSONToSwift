@@ -13,7 +13,7 @@ struct JSONToSwift {
     fileprivate let rootObjectName: String
     let rootFolderName: String?
     fileprivate let generateEquatable: Bool
-    let subObject: JSONCollection<Any>?
+    let subObject: JSONCollection?
     let verbose: Bool
     let startTime: CFAbsoluteTime
     
@@ -21,7 +21,7 @@ struct JSONToSwift {
         return CFAbsoluteTimeGetCurrent() - startTime
     }
     
-    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection<Any>? = .none, rootFolderName: String? = .none, verbose: Bool) {
+    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection? = .none, rootFolderName: String? = .none, verbose: Bool) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
         self.generateEquatable = generateEquatable
@@ -48,7 +48,7 @@ struct JSONToSwift {
         try convert(collection: collection)
     }
     
-    fileprivate func convert(collection: JSONCollection<Any>) throws {
+    fileprivate func convert(collection: JSONCollection) throws {
         if collection.nullItems.isNotEmpty {
             Output.printNewline()
             Output.printCastWarning(for: collection.nullItems.map({ $0.key }))
@@ -78,7 +78,7 @@ extension JSONToSwift {
 }
 
 extension JSONToSwift {
-    fileprivate func string(from collection: JSONCollection<Any>) -> String {
+    fileprivate func string(from collection: JSONCollection) -> String {
         var strings: [FileTextBlock] = [.header(remoteURL: jsonPath), .newLine(indentLevel: 0), .structName(name: rootObjectName)]
         addPropertyStrings(in: &strings, from: collection)
         if SwiftLanguage.globalVersionSetting == .three {
@@ -112,7 +112,7 @@ extension JSONToSwift {
         })
     }
     
-    fileprivate func addPropertyStrings(in strings: inout [FileTextBlock], from collection: JSONCollection<Any>) {
+    fileprivate func addPropertyStrings(in strings: inout [FileTextBlock], from collection: JSONCollection) {
         if collection.arrayItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.comment(string: JSONType.array.comment))
@@ -161,7 +161,7 @@ extension JSONToSwift {
         stringsCollection.append(.property(string: string))
     }
     
-    fileprivate func addInitializerDelclarations(in strings: inout [FileTextBlock], from collection: JSONCollection<Any>) {
+    fileprivate func addInitializerDelclarations(in strings: inout [FileTextBlock], from collection: JSONCollection) {
         if collection.arrayItemInitStrings.isNotEmpty {
             collection.arrayItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 2))
@@ -197,7 +197,7 @@ extension JSONToSwift {
 }
 
 extension JSONToSwift {
-    fileprivate func createSubObjects(from collection: JSONCollection<Any>) throws {
+    fileprivate func createSubObjects(from collection: JSONCollection) throws {
         var jsonToSwiftGenerators: [JSONToSwift] = []
         collection.objectItemStructNames.enumerated().forEach {
             let (index, name) = $0

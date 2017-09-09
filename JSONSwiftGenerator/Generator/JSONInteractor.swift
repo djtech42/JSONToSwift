@@ -9,7 +9,7 @@
 import Foundation
 
 enum JSONInteractor {
-    static func generateCollection(from json: Any) throws -> JSONCollection<Any>? {
+    static func generateCollection(from json: Any) throws -> JSONCollection? {
         let type = try JSONInteractor.rootType(from: json)
         let dictionaryObject: [String: Any]
         switch type {
