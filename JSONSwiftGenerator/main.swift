@@ -12,6 +12,5 @@ do {
     try LaunchRouter.run()
 }
 catch {
-    let errorString = String(describing: error)
-    print("*** Error: \(errorString)")
+    print("*** Error: \(error)")
 }

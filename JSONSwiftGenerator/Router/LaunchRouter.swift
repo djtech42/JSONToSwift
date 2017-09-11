@@ -21,18 +21,14 @@ enum LaunchRouter {
     }
     
     fileprivate static func execute(with router: DataRouter) throws {
-        guard let location = router.location else {
-            throw JSONToSwiftError(message: "Invalid URL provided")
-        }
-        
-        let verbose: Bool = RecognizedArguments.recognized(from: Input.flags).contains(.verbose)
+        let recognizedArguments = RecognizedArguments.recognized(from: Input.flags)
+        let verbose = recognizedArguments.contains(.verbose)
         
         let objectName: String
-        let recognizedArguments = RecognizedArguments.recognized(from: Input.flags)
         
         if recognizedArguments.contains(.automaticRootName) {
-            let filename = location.lastPathComponent
-            if !filename.isEmpty {
+            let filename = router.location.lastPathComponent
+            if filename.isNotEmpty {
                 objectName = filename.removingOccurrences(of: ".json").formattedForSwiftTypeName
             }
             else {
@@ -57,7 +53,7 @@ enum LaunchRouter {
         if recognizedArguments.contains(.legacy) {
             SwiftLanguage.globalVersionSetting = .three
         }
-        let converter = JSONToSwift(with: location, rootObjectName: objectName, generateEquatable: useEquatable, verbose: verbose)
+        let converter = JSONToSwift(with: router.location, rootObjectName: objectName, generateEquatable: useEquatable, verbose: verbose)
         try converter.convert()
     }
 }

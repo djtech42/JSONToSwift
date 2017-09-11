@@ -9,14 +9,15 @@
 import Foundation
 
 enum JSONInteractor {
-    static func generateCollection(from json: Any) throws -> JSONCollection? {
+    static func collection(from json: Any) throws -> JSONCollection? {
         let type = try JSONInteractor.rootType(from: json)
+        
         switch type {
         case .array:
-            guard let jsonArray = json as? [Any] else { return nil }
+            guard let jsonArray = json as? [Any] else { return .none }
             return JSONCollection(jsonArray)
-        case .dictionary:
-            guard let jsonDictionary = json as? [String : Any] else { return nil }
+        case .object:
+            guard let jsonDictionary = json as? Object else { return .none }
             return JSONCollection(jsonDictionary)
         }
     }
@@ -25,11 +26,14 @@ enum JSONInteractor {
 extension JSONInteractor {
     fileprivate enum RootObjectType {
         case array
-        case dictionary
+        case object
     }
     fileprivate static func rootType(from json: Any) throws -> RootObjectType {
-        if json is [Any] { return .array }
-        if json is Object { return .dictionary }
-        throw JSONToSwiftError(message: "JSON data has invalid root object type. JSON requires root objects to be either Array or Dictionary")
+        switch json {
+        case is [Any]: return .array
+        case is Object: return .object
+        
+        default: throw JSONToSwiftError(message: "JSON data has invalid root object type. JSON requires root objects to be either Array or Dictionary")
+        }
     }
 }

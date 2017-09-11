@@ -16,8 +16,8 @@ enum SwiftLanguage {
     
     static var globalVersionSetting: SwiftLanguage.Version = .four
     
-    static var disallowedPropertyNameCharacters: [Character] = [" ", "$", "-"]
-    static var disallowedTypeNameCharacters: [Character] = [" ", "$", "-"]
+    static var disallowedPropertyNameCharacters: Set<Character> = [" ", "$", "-"]
+    static var disallowedTypeNameCharacters: Set<Character> = [" ", "$", "-"]
     
     static func propertyString(name: String, withType type: String) -> String {
         return "let \(name): \(type)"

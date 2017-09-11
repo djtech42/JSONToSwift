@@ -13,7 +13,7 @@ enum Input {
         return Array(CommandLine.arguments.dropFirst())
     }
     static var flags: [Character]? {
-        guard let existingHyphenArgument = arguments.first(where: { $0.characters.first == "-" }) else { return nil }
+        guard let existingHyphenArgument = arguments.first(where: { $0.characters.first == "-" }) else { return .none }
         
         return Array(existingHyphenArgument.characters.dropFirst())
     }

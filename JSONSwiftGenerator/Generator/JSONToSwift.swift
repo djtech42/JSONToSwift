@@ -41,7 +41,7 @@ struct JSONToSwift {
         if verbose {
             print("verbose: data serialized from \(rootObjectName) JSON\t\(elapsedTime)")
         }
-        guard let collection = try JSONInteractor.generateCollection(from: json) else { return }
+        guard let collection = try JSONInteractor.collection(from: json) else { return }
         if verbose {
             print("verbose: \(rootObjectName) serialization converted to Swift collection\t\(elapsedTime)")
         }
@@ -84,7 +84,7 @@ extension JSONToSwift {
         if SwiftLanguage.globalVersionSetting == .three {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.initializer)
-            addInitializerDelclarations(in: &strings, from: collection)
+            addInitializerDeclarations(in: &strings, from: collection)
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
         }
         if SwiftLanguage.globalVersionSetting == .four && collection.containsBadKey {
@@ -121,7 +121,7 @@ extension JSONToSwift {
         }
         if collection.objectItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONType.dictionary.comment))
+            strings.append(.comment(string: JSONType.object.comment))
             collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
@@ -161,7 +161,7 @@ extension JSONToSwift {
         stringsCollection.append(.property(string: string))
     }
     
-    fileprivate func addInitializerDelclarations(in strings: inout [FileTextBlock], from collection: JSONCollection) {
+    fileprivate func addInitializerDeclarations(in strings: inout [FileTextBlock], from collection: JSONCollection) {
         if collection.arrayItemInitStrings.isNotEmpty {
             collection.arrayItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 2))
@@ -230,7 +230,7 @@ extension JSONToSwift {
         if let createFolderWithName = rootFolderName {
             folderName = createFolderWithName + " Sub Objects"
             let newURL = desktopPath.appendingPathComponent(folderName!, isDirectory: true)
-            try FileManager.default.createDirectory(at: newURL, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(at: newURL, withIntermediateDirectories: true, attributes: .none)
         }
         let fileWithSubdirectory = folderName != nil ? "\(folderName!)/\(rootObjectName).swift" : "\(rootObjectName).swift"
         let filePath = desktopPath.appendingPathComponent(fileWithSubdirectory)

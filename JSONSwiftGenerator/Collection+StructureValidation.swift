@@ -1,5 +1,5 @@
 //
-//  Array+StructureValidation.swift
+//  Collection+StructureValidation.swift
 //  JSONSwiftGenerator
 //
 //  Created by Dan on 7/12/17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Array where Element == [String : Any] {
+extension Collection where Element == Object {
     func validateStructure() -> Bool {
         guard let firstObject = self.first else { return false }
         

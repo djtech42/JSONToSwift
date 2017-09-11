@@ -46,6 +46,9 @@ struct JSONCollection {
         if let objectArray = sequence as? [Object] {
             add(objectArray, for: "objects")
         }
+        else if let array = sequence as? [[Any]] {
+            add(array, for: "arrays")
+        }
         else {
             add(sequence, for: "values")
         }

@@ -12,10 +12,9 @@ enum DataRouter {
     case file(location: URL)
     case url(location: URL)
     
-    var location: URL? {
+    var location: URL {
         switch self {
-        case .file(let location): return location
-        case .url(let location): return location
+        case .file(let location), .url(let location): return location
         }
     }
 }

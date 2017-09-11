@@ -1,5 +1,5 @@
 //
-//  Array+Other.swift
+//  Collection+Other.swift
 //  JSONSwiftGenerator
 //
 //  Created by Dan on 7/21/17.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-extension Array {
+extension Collection {
     var isNotEmpty: Bool { return !isEmpty }
 }

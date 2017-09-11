@@ -8,27 +8,22 @@
 
 import Foundation
 
-enum JSONType {
+enum JSONType: String {
     case array
-    case dictionary
+    case object
     case string
     case number
     case bool
     case null
 }
 
-extension JSONType {
+extension JSONType: CustomStringConvertible {
+    var description: String {
+        return rawValue.capitalized
+    }
+    
     var comment: String {
-        let specificString: String
-        switch self {
-        case .array: specificString = "Array"
-        case .dictionary: specificString = "Other"
-        case .string: specificString = "String"
-        case .number: specificString = "Number"
-        case .bool: specificString = "Bool"
-        case .null: specificString = "Null"
-        }
-        return "//    \(specificString) Objects"
+        return "//    \(self) Properties"
     }
     
 }
