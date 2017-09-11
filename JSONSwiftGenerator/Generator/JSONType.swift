@@ -9,10 +9,13 @@
 import Foundation
 
 typealias Object = [String : Any]
+typealias Hash = [String : Any]
 
 enum JSONType: String {
     case array
     case object
+    case hash
+    
     case string
     case number
     case bool

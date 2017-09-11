@@ -122,9 +122,17 @@ extension JSONCollection {
     
     var objectArrayItems: [(key: String, value: Any)] {
         return contents.filter {
-            guard let objectArray = $0.value as? [Object] else { return false }
+            guard let array = $0.value as? [Object] else { return false }
             
-            return objectArray.validateStructure()
+            return array.jsonCollectionType == .objectArray
+        }
+    }
+    
+    var hashArrayItems: [(key: String, value: Any)] {
+        return contents.filter {
+            guard let array = $0.value as? [Hash] else { return false }
+            
+            return array.jsonCollectionType == .hashArray
         }
     }
     
@@ -158,6 +166,7 @@ extension JSONCollection {
         allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]") }
         allArrayPropertyStrings += objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]") }
+        allArrayPropertyStrings += hashArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String : Any]") }
         allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
         
         return allArrayPropertyStrings
@@ -169,6 +178,7 @@ extension JSONCollection {
         arrayInitStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Bool]", defaultValueString: "[]") }
         arrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Double]", defaultValueString: "[]") }
         arrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[String]", defaultValueString: "[]") }
+        arrayInitStrings += hashArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[String : Any]", defaultValueString: "[:]") }
         arrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Any]", defaultValueString: "[]") }
         
         return arrayInitStrings
