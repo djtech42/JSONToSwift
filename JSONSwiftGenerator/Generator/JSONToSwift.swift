@@ -13,6 +13,7 @@ struct JSONToSwift {
     fileprivate let rootObjectName: String
     let rootFolderName: String?
     fileprivate let generateEquatable: Bool
+    fileprivate let swiftVersionSetting: SwiftLanguage.Version
     let subObject: JSONCollection?
     let verbose: Bool
     let startTime: CFAbsoluteTime
@@ -21,10 +22,11 @@ struct JSONToSwift {
         return CFAbsoluteTimeGetCurrent() - startTime
     }
     
-    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, subObject: JSONCollection? = .none, rootFolderName: String? = .none, verbose: Bool) {
+    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, swiftVersionSetting: SwiftLanguage.Version = .four, subObject: JSONCollection? = .none, rootFolderName: String? = .none, verbose: Bool) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
         self.generateEquatable = generateEquatable
+        self.swiftVersionSetting = swiftVersionSetting
         self.subObject = subObject
         self.rootFolderName = rootFolderName
         self.verbose = verbose
@@ -79,15 +81,15 @@ extension JSONToSwift {
 
 extension JSONToSwift {
     fileprivate func string(from collection: JSONCollection) -> String {
-        var strings: [FileTextBlock] = [.header(remoteURL: jsonPath), .newLine(indentLevel: 0), .structName(name: rootObjectName)]
+        var strings: [FileTextBlock] = [.header(remoteURL: jsonPath), .newLine(indentLevel: 0), .structName(name: rootObjectName, swiftVersion: swiftVersionSetting)]
         addPropertyStrings(in: &strings, from: collection)
-        if SwiftLanguage.globalVersionSetting == .three {
+        if swiftVersionSetting == .three {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.initializer)
             addInitializerDeclarations(in: &strings, from: collection)
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
         }
-        if SwiftLanguage.globalVersionSetting == .four && collection.containsBadKey {
+        if swiftVersionSetting == .four && collection.containsBadKey {
             strings.append(contentsOf: [.newLine(indentLevel: 1), .codingKeysEnum])
             for (badKey, _) in collection.originalKeys {
                 strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(name: badKey)])
@@ -205,7 +207,7 @@ extension JSONToSwift {
             let object = collection.objectItems[index].value as? Object ?? [:]
             let newCollection = JSONCollection(object)
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
-            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, swiftVersionSetting: swiftVersionSetting, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
             jsonToSwiftGenerators.append(generator)
         }
         collection.objectArrayItemStructNames.enumerated().forEach {
@@ -216,7 +218,7 @@ extension JSONToSwift {
             
             let newCollection = JSONCollection(existingObject)
             let nameForDirectory = collection.objectArrayItemStructNames.count > 1 ? rootObjectName : rootFolderName
-            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, swiftVersionSetting: swiftVersionSetting, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
             jsonToSwiftGenerators.append(generator)
         }
         try jsonToSwiftGenerators.forEach({ try $0.convert(collection: $0.subObject!) })

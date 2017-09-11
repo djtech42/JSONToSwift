@@ -11,7 +11,7 @@ import Foundation
 enum FileTextBlock {
     case header(remoteURL: URL)
     
-    case structName(name: String)
+    case structName(name: String, swiftVersion: SwiftLanguage.Version)
     case extensionName(name: String)
     
     case property(string: String)
@@ -47,7 +47,7 @@ extension FileTextBlock: CustomStringConvertible {
             
             """
             
-        case .structName(let name): return "\(SwiftLanguage.Keyword.struct) \(name)\(SwiftLanguage.ConformingProtocol.encodingAndDecoding) {"
+        case .structName(let name, let swiftVersion): return "\(SwiftLanguage.Keyword.struct) \(name)\(SwiftLanguage.ConformingProtocol.encodingAndDecoding(in: swiftVersion)) {"
         case .extensionName(let name): return "\(SwiftLanguage.Keyword.extension) \(name)\(SwiftLanguage.ConformingProtocol.equatable) {"
             
         case .property(let string): return string

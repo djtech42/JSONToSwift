@@ -50,10 +50,7 @@ enum LaunchRouter {
             useEquatable = Input.getUseEquatable()
         }
         
-        if recognizedArguments.contains(.legacy) {
-            SwiftLanguage.globalVersionSetting = .three
-        }
-        let converter = JSONToSwift(with: router.location, rootObjectName: objectName, generateEquatable: useEquatable, verbose: verbose)
+        let converter = JSONToSwift(with: router.location, rootObjectName: objectName, generateEquatable: useEquatable, swiftVersionSetting: recognizedArguments.contains(.legacy) ? .three : .four, verbose: verbose)
         try converter.convert()
     }
 }

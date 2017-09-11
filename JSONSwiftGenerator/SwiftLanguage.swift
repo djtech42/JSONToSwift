@@ -14,8 +14,6 @@ enum SwiftLanguage {
         case four = 4
     }
     
-    static var globalVersionSetting: SwiftLanguage.Version = .four
-    
     static var disallowedPropertyNameCharacters: Set<Character> = [" ", "$", "-"]
     static var disallowedTypeNameCharacters: Set<Character> = [" ", "$", "-"]
     
@@ -41,8 +39,8 @@ enum SwiftLanguage {
         static let `enum` = "enum"
     }
     enum ConformingProtocol {
-        static var encodingAndDecoding: String {
-            switch SwiftLanguage.globalVersionSetting {
+        static func encodingAndDecoding(in version: SwiftLanguage.Version) -> String {
+            switch version {
             case .four: return ": Codable"
             default: return ""
             }
