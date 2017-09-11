@@ -8,9 +8,11 @@
 
 import Foundation
 
+typealias Object = [String : Any]
+
 struct JSONCollection {
-    fileprivate var contents: [String : Any] = [:]
-    var originalKeys: [String : Any] = [:]
+    fileprivate var contents: Object = [:]
+    var originalKeys: Object = [:]
     var swiftToOriginalKeyMapping: [String : String] = [:]
     var containsBadKey: Bool = false
     
@@ -37,6 +39,15 @@ struct JSONCollection {
             swiftToOriginalKeyMapping[fixedKey] = key
             
             add(value, for: fixedKey)
+        }
+    }
+    
+    init<S: Sequence>(_ sequence: S) {
+        if let objectArray = sequence as? [Object] {
+            add(objectArray, for: "objects")
+        }
+        else {
+            add(sequence, for: "values")
         }
     }
 }
@@ -101,7 +112,7 @@ extension JSONCollection: Collection {
 
 extension JSONCollection {
     var equatableItems: [(key: String, value: Any)] {
-        return contents.filter { $0.value is [String : Any] || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] || $0.value is [[String : Any]] }
+        return contents.filter { $0.value is Object || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] || $0.value is [Object] }
     }
     
     var arrayItems: [(key: String, value: Any)] {
@@ -110,14 +121,14 @@ extension JSONCollection {
     
     var objectArrayItems: [(key: String, value: Any)] {
         return contents.filter {
-            guard let objectArray = $0.value as? [[String : Any]] else { return false }
+            guard let objectArray = $0.value as? [Object] else { return false }
             
             return objectArray.validateStructure()
         }
     }
     
     var objectItems: [(key: String, value: Any)] {
-        return contents.filter { $0.value is [String : Any] }
+        return contents.filter { $0.value is Object }
     }
     
     var stringItems: [(key: String, value: Any)] {
@@ -134,7 +145,7 @@ extension JSONCollection {
     }
     
     var nullItems: [(key: String, value: Any)] {
-        return contents.filter { !($0.value is [Any]) && !($0.value is [String : Any]) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
+        return contents.filter { !($0.value is [Any]) && !($0.value is Object) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
     }
 }
 
@@ -146,7 +157,7 @@ extension JSONCollection {
         allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]") }
         allArrayPropertyStrings += objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]") }
-        allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [[String : Any]]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
+        allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
         
         return allArrayPropertyStrings
     }
@@ -157,13 +168,13 @@ extension JSONCollection {
         arrayInitStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Bool]", defaultValueString: "[]") }
         arrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Double]", defaultValueString: "[]") }
         arrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[String]", defaultValueString: "[]") }
-        arrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [[String : Any]]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Any]", defaultValueString: "[]") }
+        arrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Any]", defaultValueString: "[]") }
         
         return arrayInitStrings
     }
     
     var objectArrayInitStrings: [String] {
-        return objectArrayItems.map { "let \($0.key.madeSingleFromPlural)ObjectArray = dictionary[\"\($0.key)\"] as? [[String: Any]] ?? [[:]]\n\t\tself.\($0.key) = \($0.key.madeSingleFromPlural)ObjectArray.flatMap(\($0.key.madeSingleFromPlural.formattedForSwiftTypeName).init)" }
+        return objectArrayItems.map { "let \($0.key.madeSingleFromPlural)ObjectArray = dictionary[\"\($0.key)\"] as? [[String : Any]] ?? [[:]]\n\t\tself.\($0.key) = \($0.key.madeSingleFromPlural)ObjectArray.flatMap(\($0.key.madeSingleFromPlural.formattedForSwiftTypeName).init)" }
     }
     
     var objectArrayItemStructNames: [String] {
@@ -175,7 +186,7 @@ extension JSONCollection {
     }
     
     var objectItemInitStrings: [String] {
-        return objectItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String: Any] ?? [:]\n\t\tself.\($0.key) = \($0.key.formattedForSwiftTypeName)(with: \($0.key)Object)" }
+        return objectItems.map { "let \($0.key)Object = dictionary[\"\($0.key)\"] as? [String : Any] ?? [:]\n\t\tself.\($0.key) = \($0.key.formattedForSwiftTypeName)(with: \($0.key)Object)" }
     }
     
     var objectItemStructNames: [String] {

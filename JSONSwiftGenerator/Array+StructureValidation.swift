@@ -16,7 +16,7 @@ extension Array where Element == [String : Any] {
             for (key, value) in object {
                 guard let firstObjectValue = firstObject[key] else { return false }
                 
-                if value is [String: Any] && !(firstObjectValue is [String: Any]) { return false }
+                if value is Object && !(firstObjectValue is Object) { return false }
                 if value is [Any] && !(firstObjectValue is [Any]) { return false }
                 if value is String && !(firstObjectValue is String) { return false }
                 if value is Bool && !(firstObjectValue is Bool) { return false }

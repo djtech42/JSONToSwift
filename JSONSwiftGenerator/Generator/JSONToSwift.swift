@@ -202,7 +202,7 @@ extension JSONToSwift {
         collection.objectItemStructNames.enumerated().forEach {
             let (index, name) = $0
             
-            let dictionary = collection.objectItems[index].value as? [String: Any] ?? [:]
+            let dictionary = collection.objectItems[index].value as? Object ?? [:]
             let newCollection = JSONCollection(dictionary)
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
             let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
@@ -211,7 +211,7 @@ extension JSONToSwift {
         collection.objectArrayItemStructNames.enumerated().forEach {
             let (index, name) = $0
             
-            let dictionaryArray = collection.objectArrayItems[index].value as? [[String: Any]] ?? [[:]]
+            let dictionaryArray = collection.objectArrayItems[index].value as? [Object] ?? [[:]]
             guard let existingDictionary = dictionaryArray.first else { return }
             
             let newCollection = JSONCollection(existingDictionary)
