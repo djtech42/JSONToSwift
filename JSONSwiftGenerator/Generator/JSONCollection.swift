@@ -8,8 +8,6 @@
 
 import Foundation
 
-typealias Object = [String : Any]
-
 struct JSONCollection {
     fileprivate var contents: Object = [:]
     var originalKeys: Object = [:]

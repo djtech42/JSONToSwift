@@ -17,8 +17,8 @@ enum JSONInteractor {
             guard let jsonArray = json as? [Any] else { return .none }
             return JSONCollection(jsonArray)
         case .object:
-            guard let jsonDictionary = json as? Object else { return .none }
-            return JSONCollection(jsonDictionary)
+            guard let jsonObject = json as? Object else { return .none }
+            return JSONCollection(jsonObject)
         }
     }
 }
@@ -33,7 +33,7 @@ extension JSONInteractor {
         case is [Any]: return .array
         case is Object: return .object
         
-        default: throw JSONToSwiftError(message: "JSON data has invalid root object type. JSON requires root objects to be either Array or Dictionary")
+        default: throw JSONToSwiftError(message: "JSON data has invalid root object type. JSON requires root objects to be either Array or Object")
         }
     }
 }

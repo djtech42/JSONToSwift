@@ -14,7 +14,7 @@ extension String {
     }
     
     func removingOccurrencesOfCharacters(from string: String) -> String {
-        return removingOccurrences(of: Array(string.characters))
+        return removingOccurrences(of: string.characters)
     }
     
     func removingOccurrences<T: Sequence>(of characters: T) -> String where T.Iterator.Element == Character {
