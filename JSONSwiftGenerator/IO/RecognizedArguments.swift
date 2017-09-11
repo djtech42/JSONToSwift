@@ -13,8 +13,9 @@ struct RecognizedArguments: OptionSet {
     
     static let equatable = RecognizedArguments(rawValue: 1 << 0)
     static let automaticRootName = RecognizedArguments(rawValue: 1 << 1)
-    static let legacy = RecognizedArguments(rawValue: 1 << 2)
-    static let verbose = RecognizedArguments(rawValue: 1 << 3)
+    static let preferOptionals = RecognizedArguments(rawValue: 1 << 2)
+    static let legacy = RecognizedArguments(rawValue: 1 << 3)
+    static let verbose = RecognizedArguments(rawValue: 1 << 4)
     
     static func recognized(from flags: [Character]?) -> RecognizedArguments {
         guard let existingFlags = flags else { return [] }
@@ -29,6 +30,9 @@ struct RecognizedArguments: OptionSet {
         }
         if existingFlags.contains("n") {
             recognized.insert(.automaticRootName)
+        }
+        if existingFlags.contains("o") {
+            recognized.insert(.preferOptionals)
         }
         if existingFlags.contains("v") {
             recognized.insert(.verbose)

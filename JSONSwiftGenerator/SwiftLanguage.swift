@@ -17,8 +17,8 @@ enum SwiftLanguage {
     static var disallowedPropertyNameCharacters: Set<Character> = [" ", "$", "-"]
     static var disallowedTypeNameCharacters: Set<Character> = [" ", "$", "-"]
     
-    static func propertyString(name: String, withType type: String) -> String {
-        return "let \(name): \(type)"
+    static func propertyString(name: String, withType type: String, optional: Bool) -> String {
+        return "let \(name): \(type)\(optional ? "?" : "")"
     }
     static func initializer(name: String, dictionaryName: String) -> String {
         return "self.\(name) = dictionary[\"\(dictionaryName)\"]"
@@ -26,8 +26,11 @@ enum SwiftLanguage {
     static func initializerNonOptionalCast(name: String, dictionaryName: String, toType type: String) -> String {
         return "\(initializer(name: name, dictionaryName: dictionaryName)) as \(type)"
     }
+    static func initializerOptionalCast(name: String, dictionaryName: String, toType type: String) -> String {
+        return "\(initializer(name: name, dictionaryName: dictionaryName)) as? \(type)"
+    }
     static func initializerWithDefaultValueCast(name: String, dictionaryName: String, toType type: String, defaultValueString: String) -> String {
-        return "\(initializer(name: name, dictionaryName: dictionaryName)) as? \(type) ?? \(defaultValueString)"
+        return "\(initializerOptionalCast(name: name, dictionaryName: dictionaryName, toType: type)) ?? \(defaultValueString)"
     }
     
     enum Keyword {

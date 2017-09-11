@@ -51,7 +51,7 @@ extension FileTextBlock: CustomStringConvertible {
         case .extensionName(let name): return "\(SwiftLanguage.Keyword.extension) \(name)\(SwiftLanguage.ConformingProtocol.equatable) {"
             
         case .property(let string): return string
-        case .initializer: return "init(with dictionary: [String: Any]) {"
+        case .initializer: return "init(with dictionary: [String : Any]) {"
         
         case .codingKeysEnum: return "\(SwiftLanguage.Keyword.private) \(SwiftLanguage.Keyword.enum) CodingKeys: String, CodingKey {"
         case .codingKeysEnumPropertyCase(let name): return "case \(name.formattedForSwiftPropertyName) = \"\(name)\""

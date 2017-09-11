@@ -13,6 +13,7 @@ struct JSONCollection {
     var originalKeys: Object = [:]
     var swiftToOriginalKeyMapping: [String : String] = [:]
     var containsBadKey: Bool = false
+    var preferOptionals: Bool = false
     
     init(with key: String, element: Any) {
         if !key.isFormattedForSwiftPropertyName {
@@ -154,11 +155,11 @@ extension JSONCollection {
     var arrayItemPropertyStrings: [String] {
         var allArrayPropertyStrings: [String] = []
         
-        allArrayPropertyStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Bool]") }
-        allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]") }
-        allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]") }
-        allArrayPropertyStrings += objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]") }
-        allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
+        allArrayPropertyStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Bool]", optional: preferOptionals) }
+        allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]", optional: preferOptionals) }
+        allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]", optional: preferOptionals) }
+        allArrayPropertyStrings += objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]", optional: preferOptionals) }
+        allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]", optional: preferOptionals) }
         
         return allArrayPropertyStrings
     }
@@ -183,7 +184,7 @@ extension JSONCollection {
     }
     
     var objectItemPropertyStrings: [String] {
-        return objectItems.map { SwiftLanguage.propertyString(name: $0.key, withType: $0.key.formattedForSwiftTypeName) }
+        return objectItems.map { SwiftLanguage.propertyString(name: $0.key, withType: $0.key.formattedForSwiftTypeName, optional: preferOptionals) }
     }
     
     var objectItemInitStrings: [String] {
@@ -195,31 +196,46 @@ extension JSONCollection {
     }
     
     var stringItemPropertyStrings: [String] {
-        return stringItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "String") }
+        return stringItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "String", optional: preferOptionals) }
     }
     
     var stringItemInitStrings: [String] {
-        return stringItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "String", defaultValueString: "\"\"") }
+        if preferOptionals {
+            return stringItems.map { SwiftLanguage.initializerOptionalCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "String") }
+        }
+        else {
+            return stringItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "String", defaultValueString: "\"\"") }
+        }
     }
     
     var numberItemPropertyStrings: [String] {
-        return numberItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Double") }
+        return numberItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Double", optional: preferOptionals) }
     }
     
     var numberItemInitStrings: [String] {
-        return numberItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Double", defaultValueString: "0.0") }
+        if preferOptionals {
+            return numberItems.map { SwiftLanguage.initializerOptionalCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Double") }
+        }
+        else {
+            return numberItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Double", defaultValueString: "0.0") }
+        }
     }
     
     var boolItemPropertyStrings: [String] {
-        return boolItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Bool") }
+        return boolItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Bool", optional: preferOptionals) }
     }
     
     var boolItemInitStrings: [String] {
-        return boolItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Bool", defaultValueString: "false") }
+        if preferOptionals {
+            return boolItems.map { SwiftLanguage.initializerOptionalCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Bool") }
+        }
+        else {
+            return boolItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Bool", defaultValueString: "false") }
+        }
     }
     
     var nullItemPropertyStrings: [String] {
-        return nullItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Any?") }
+        return nullItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "Any", optional: true) }
     }
     
     var nullItemInitStrings: [String] {

@@ -14,6 +14,7 @@ struct JSONToSwift {
     let rootFolderName: String?
     fileprivate let generateEquatable: Bool
     fileprivate let swiftVersionSetting: SwiftLanguage.Version
+    fileprivate let preferOptionals: Bool
     let subObject: JSONCollection?
     let verbose: Bool
     let startTime: CFAbsoluteTime
@@ -22,11 +23,12 @@ struct JSONToSwift {
         return CFAbsoluteTimeGetCurrent() - startTime
     }
     
-    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, swiftVersionSetting: SwiftLanguage.Version = .four, subObject: JSONCollection? = .none, rootFolderName: String? = .none, verbose: Bool) {
+    init(with jsonPath: URL, rootObjectName: String, generateEquatable: Bool, swiftVersionSetting: SwiftLanguage.Version, preferOptionals: Bool, subObject: JSONCollection? = .none, rootFolderName: String? = .none, verbose: Bool) {
         self.jsonPath = jsonPath
         self.rootObjectName = rootObjectName
         self.generateEquatable = generateEquatable
         self.swiftVersionSetting = swiftVersionSetting
+        self.preferOptionals = preferOptionals
         self.subObject = subObject
         self.rootFolderName = rootFolderName
         self.verbose = verbose
@@ -43,10 +45,11 @@ struct JSONToSwift {
         if verbose {
             print("verbose: data serialized from \(rootObjectName) JSON\t\(elapsedTime)")
         }
-        guard let collection = try JSONInteractor.collection(from: json) else { return }
+        guard var collection = try JSONInteractor.collection(from: json) else { return }
         if verbose {
             print("verbose: \(rootObjectName) serialization converted to Swift collection\t\(elapsedTime)")
         }
+        collection.preferOptionals = preferOptionals
         try convert(collection: collection)
     }
     
@@ -205,9 +208,10 @@ extension JSONToSwift {
             let (index, name) = $0
             
             let object = collection.objectItems[index].value as? Object ?? [:]
-            let newCollection = JSONCollection(object)
+            var newCollection = JSONCollection(object)
+            newCollection.preferOptionals = preferOptionals
             let nameForDirectory = collection.objectItemStructNames.count > 1 ? rootObjectName : rootFolderName
-            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, swiftVersionSetting: swiftVersionSetting, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, swiftVersionSetting: swiftVersionSetting, preferOptionals: preferOptionals, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
             jsonToSwiftGenerators.append(generator)
         }
         collection.objectArrayItemStructNames.enumerated().forEach {
@@ -216,9 +220,10 @@ extension JSONToSwift {
             let objectArray = collection.objectArrayItems[index].value as? [Object] ?? [[:]]
             guard let existingObject = objectArray.first else { return }
             
-            let newCollection = JSONCollection(existingObject)
+            var newCollection = JSONCollection(existingObject)
+            newCollection.preferOptionals = preferOptionals
             let nameForDirectory = collection.objectArrayItemStructNames.count > 1 ? rootObjectName : rootFolderName
-            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, swiftVersionSetting: swiftVersionSetting, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
+            let generator = JSONToSwift(with: jsonPath, rootObjectName: name, generateEquatable: generateEquatable, swiftVersionSetting: swiftVersionSetting, preferOptionals: preferOptionals, subObject: newCollection, rootFolderName: nameForDirectory, verbose: verbose)
             jsonToSwiftGenerators.append(generator)
         }
         try jsonToSwiftGenerators.forEach({ try $0.convert(collection: $0.subObject!) })
