@@ -10,7 +10,6 @@ import Foundation
 
 struct JSONCollection {
     fileprivate var contents: Object = [:]
-    var originalKeys: Object = [:]
     var swiftToOriginalKeyMapping: [String : String] = [:]
     var containsBadKey: Bool = false
     
@@ -18,8 +17,6 @@ struct JSONCollection {
         if !key.isFormattedForSwiftPropertyName {
             containsBadKey = true
         }
-        originalKeys[key] = element
-        
         let fixedKey = key.formattedForSwiftPropertyName
         swiftToOriginalKeyMapping[fixedKey] = key
         
@@ -31,8 +28,6 @@ struct JSONCollection {
             if !key.isFormattedForSwiftPropertyName {
                 containsBadKey = true
             }
-            originalKeys[key] = value
-            
             let fixedKey = key.formattedForSwiftPropertyName
             swiftToOriginalKeyMapping[fixedKey] = key
             

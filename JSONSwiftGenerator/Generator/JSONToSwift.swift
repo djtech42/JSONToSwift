@@ -91,13 +91,15 @@ extension JSONToSwift {
         }
         if swiftVersionSetting == .four && collection.containsBadKey {
             strings.append(contentsOf: [.newLine(indentLevel: 1), .codingKeysEnum])
-            for (badKey, _) in collection.originalKeys {
-                strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(name: badKey)])
+            
+            for (fixedKey, badKey) in collection.swiftToOriginalKeyMapping {
+                strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(originalName: badKey, newName: fixedKey)])
             }
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 1), .newLine(indentLevel: 1), .encodeFunctionDeclaration, .newLine(indentLevel: 2), .encodeFunctionContainerAssign, .newLine(indentLevel: 2)])
-            for (badKey, _) in collection.originalKeys {
-                strings.append(contentsOf: [.newLine(indentLevel: 2), .encodeFunctionStatement(propertyName: badKey)])
+            for (fixedKey, _) in collection.swiftToOriginalKeyMapping {
+                strings.append(contentsOf: [.newLine(indentLevel: 2), .encodeFunctionStatement(propertyName: fixedKey)])
             }
+            
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
         }
         strings.append(contentsOf: [.newLine(indentLevel: 0), .close])

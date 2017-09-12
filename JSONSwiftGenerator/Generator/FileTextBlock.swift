@@ -18,7 +18,7 @@ enum FileTextBlock {
     case initializer
     
     case codingKeysEnum
-    case codingKeysEnumPropertyCase(name: String)
+    case codingKeysEnumPropertyCase(originalName: String, newName: String)
     
     case encodeFunctionDeclaration
     case encodeFunctionContainerAssign
@@ -54,11 +54,11 @@ extension FileTextBlock: CustomStringConvertible {
         case .initializer: return "init(with dictionary: [String: Any]) {"
         
         case .codingKeysEnum: return "\(SwiftLanguage.Keyword.private) \(SwiftLanguage.Keyword.enum) CodingKeys: String, CodingKey {"
-        case .codingKeysEnumPropertyCase(let name): return "case \(name.formattedForSwiftPropertyName) = \"\(name)\""
+        case .codingKeysEnumPropertyCase(let originalName, let newName): return "case \(newName) = \"\(originalName)\""
             
         case .encodeFunctionDeclaration: return "public func encode(to encoder: Encoder) throws {"
         case .encodeFunctionContainerAssign: return "var container = encoder.container(keyedBy: CodingKeys.self)"
-        case .encodeFunctionStatement(let name): return "try container.encode(\(name.formattedForSwiftPropertyName), forKey: .\(name.formattedForSwiftPropertyName))"
+        case .encodeFunctionStatement(let name): return "try container.encode(\(name), forKey: .\(name))"
             
         case .equatableFunctionDeclaration(let name): return "\(SwiftLanguage.Keyword.static) \(SwiftLanguage.Keyword.func) ==(lhs: \(name), rhs: \(name)) -> Bool {"
         case .equatableComparison(let name): return "guard lhs.\(name) == rhs.\(name) else { return false }"
