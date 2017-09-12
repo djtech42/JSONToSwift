@@ -89,14 +89,14 @@ extension JSONToSwift {
             addInitializerDeclarations(in: &strings, from: collection)
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close])
         }
-        if swiftVersionSetting == .four && collection.containsBadKey {
+        if swiftVersionSetting == .four && collection.containsABadKey {
             strings.append(contentsOf: [.newLine(indentLevel: 1), .codingKeysEnum])
             
-            for (fixedKey, badKey) in collection.swiftToOriginalKeyMapping {
+            for (fixedKey, badKey) in collection.swiftToOriginalJSONKeyMapping {
                 strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(originalName: badKey, newName: fixedKey)])
             }
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 1), .newLine(indentLevel: 1), .encodeFunctionDeclaration, .newLine(indentLevel: 2), .encodeFunctionContainerAssign, .newLine(indentLevel: 2)])
-            for (fixedKey, _) in collection.swiftToOriginalKeyMapping {
+            for (fixedKey, _) in collection.swiftToOriginalJSONKeyMapping {
                 strings.append(contentsOf: [.newLine(indentLevel: 2), .encodeFunctionStatement(propertyName: fixedKey)])
             }
             
@@ -119,37 +119,37 @@ extension JSONToSwift {
     fileprivate func addPropertyStrings(in strings: inout [FileTextBlock], from collection: JSONCollection) {
         if collection.arrayItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONType.array.comment))
+            strings.append(.propertyComment(name: "Array"))
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.objectItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONType.object.comment))
+            strings.append(.propertyComment(name: "Object"))
             collection.objectItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.stringItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONType.string.comment))
+            strings.append(.propertyComment(name: "String"))
             collection.stringItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.numberItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONType.number.comment))
+            strings.append(.propertyComment(name: "Number"))
             collection.numberItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.boolItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONType.bool.comment))
+            strings.append(.propertyComment(name: "Bool"))
             collection.boolItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.nullItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
-            strings.append(.comment(string: JSONType.null.comment))
+            strings.append(.propertyComment(name: "Null"))
             collection.nullItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }

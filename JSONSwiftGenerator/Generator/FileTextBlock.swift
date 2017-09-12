@@ -15,6 +15,7 @@ enum FileTextBlock {
     case extensionName(name: String)
     
     case property(string: String)
+    case propertyComment(name: String)
     case initializer
     
     case codingKeysEnum
@@ -27,8 +28,6 @@ enum FileTextBlock {
     case equatableFunctionDeclaration(name: String)
     case equatableComparison(name: String)
     case equatableFunctionEnd
-    
-    case comment(string: String)
     
     case newLine(indentLevel: Int)
     case close
@@ -51,6 +50,7 @@ extension FileTextBlock: CustomStringConvertible {
         case .extensionName(let name): return "\(SwiftLanguage.Keyword.extension) \(name)\(SwiftLanguage.ConformingProtocol.equatable) {"
             
         case .property(let string): return string
+        case .propertyComment(let type): return "//    \(type) Properties"
         case .initializer: return "init(with dictionary: [String: Any]) {"
         
         case .codingKeysEnum: return "\(SwiftLanguage.Keyword.private) \(SwiftLanguage.Keyword.enum) CodingKeys: String, CodingKey {"
@@ -63,8 +63,6 @@ extension FileTextBlock: CustomStringConvertible {
         case .equatableFunctionDeclaration(let name): return "\(SwiftLanguage.Keyword.static) \(SwiftLanguage.Keyword.func) ==(lhs: \(name), rhs: \(name)) -> Bool {"
         case .equatableComparison(let name): return "guard lhs.\(name) == rhs.\(name) else { return false }"
         case .equatableFunctionEnd: return "return true"
-            
-        case .comment(let string): return string
             
         case .newLine(let indentLevel): return """
         

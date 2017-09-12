@@ -10,26 +10,22 @@ import Foundation
 
 struct JSONCollection {
     fileprivate var contents: Object = [:]
-    var swiftToOriginalKeyMapping: [String : String] = [:]
-    var containsBadKey: Bool = false
+    var swiftToOriginalJSONKeyMapping: [String : String] = [:]
+    var containsABadKey: Bool {
+        return swiftToOriginalJSONKeyMapping.isNotEmpty
+    }
     
     init(with key: String, element: Any) {
-        if !key.isFormattedForSwiftPropertyName {
-            containsBadKey = true
-        }
         let fixedKey = key.formattedForSwiftPropertyName
-        swiftToOriginalKeyMapping[fixedKey] = key
+        swiftToOriginalJSONKeyMapping[fixedKey] = key
         
         add(element, for: fixedKey)
     }
     
     init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Any) {
         for (key, value) in sequence {
-            if !key.isFormattedForSwiftPropertyName {
-                containsBadKey = true
-            }
             let fixedKey = key.formattedForSwiftPropertyName
-            swiftToOriginalKeyMapping[fixedKey] = key
+            swiftToOriginalJSONKeyMapping[fixedKey] = key
             
             add(value, for: fixedKey)
         }
@@ -54,55 +50,17 @@ extension JSONCollection {
             contents[key] = element
         }
     }
-    
-    mutating func remove(_ key: String) {
-        precondition(contents.contains(where: { $0.key == key }), "Missing node with specified key: \(key)")
-        contents.removeValue(forKey: key)
-    }
 }
 
 extension JSONCollection: CustomStringConvertible {
     var description: String {
-        return String(describing: contents)
+        return contents.description
     }
 }
 
 extension JSONCollection: ExpressibleByDictionaryLiteral {
     init(dictionaryLiteral elements: (String, Any)...) {
         self.init(elements.map { (key: $0.0, value: $0.1) })
-    }
-}
-
-extension JSONCollection: Sequence {
-    typealias Iterator = AnyIterator<(value: Any, key: String)>
-    
-    func makeIterator() -> Iterator {
-        var existingIterator = contents.makeIterator()
-        return AnyIterator {
-            existingIterator.next()
-        }
-    }
-}
-
-extension JSONCollection: Collection {
-    typealias Index = DictionaryIndex<String, Any>
-    
-    var startIndex: Index {
-        return contents.startIndex
-    }
-    
-    var endIndex: Index {
-        return contents.endIndex
-    }
-    
-    subscript (position: Index) -> Iterator.Element {
-        precondition(indices.contains(position), "Index out of bounds")
-        let dictionaryElement = contents[position]
-        return (key: dictionaryElement.key, value: dictionaryElement.value)
-    }
-    
-    func index(after otherIndex: Index) -> Index {
-        return contents.index(after: otherIndex)
     }
 }
 
@@ -170,11 +128,11 @@ extension JSONCollection {
     var arrayItemInitStrings: [String] {
         var arrayInitStrings: [String] = []
         
-        arrayInitStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Bool]", defaultValueString: "[]") }
-        arrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Double]", defaultValueString: "[]") }
-        arrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[String]", defaultValueString: "[]") }
-        arrayInitStrings += hashArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[String : Any]", defaultValueString: "[:]") }
-        arrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "[Any]", defaultValueString: "[]") }
+        arrayInitStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[Bool]", defaultValueString: "[]") }
+        arrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[Double]", defaultValueString: "[]") }
+        arrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[String]", defaultValueString: "[]") }
+        arrayInitStrings += hashArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[String : Any]", defaultValueString: "[:]") }
+        arrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[Any]", defaultValueString: "[]") }
         
         return arrayInitStrings
     }
@@ -204,7 +162,7 @@ extension JSONCollection {
     }
     
     var stringItemInitStrings: [String] {
-        return stringItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "String", defaultValueString: "\"\"") }
+        return stringItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "String", defaultValueString: "\"\"") }
     }
     
     var numberItemPropertyStrings: [String] {
@@ -212,7 +170,7 @@ extension JSONCollection {
     }
     
     var numberItemInitStrings: [String] {
-        return numberItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Double", defaultValueString: "0.0") }
+        return numberItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "Double", defaultValueString: "0.0") }
     }
     
     var boolItemPropertyStrings: [String] {
@@ -220,7 +178,7 @@ extension JSONCollection {
     }
     
     var boolItemInitStrings: [String] {
-        return boolItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!, toType: "Bool", defaultValueString: "false") }
+        return boolItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "Bool", defaultValueString: "false") }
     }
     
     var nullItemPropertyStrings: [String] {
@@ -228,6 +186,6 @@ extension JSONCollection {
     }
     
     var nullItemInitStrings: [String] {
-        return nullItems.map { SwiftLanguage.initializer(name: $0.key, dictionaryName: swiftToOriginalKeyMapping[$0.key]!) }
+        return nullItems.map { SwiftLanguage.initializer(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!) }
     }
 }
