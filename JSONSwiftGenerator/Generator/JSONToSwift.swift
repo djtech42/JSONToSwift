@@ -92,11 +92,11 @@ extension JSONToSwift {
         if swiftVersionSetting == .four && collection.containsABadKey {
             strings.append(contentsOf: [.newLine(indentLevel: 1), .codingKeysEnum])
             
-            for (fixedKey, badKey) in collection.swiftToOriginalJSONKeyMapping {
+            for (fixedKey, badKey) in collection.sortedSwiftKeyMappings {
                 strings.append(contentsOf: [.newLine(indentLevel: 2), .codingKeysEnumPropertyCase(originalName: badKey, newName: fixedKey)])
             }
             strings.append(contentsOf: [.newLine(indentLevel: 1), .close, .newLine(indentLevel: 1), .newLine(indentLevel: 1), .encodeFunctionDeclaration, .newLine(indentLevel: 2), .encodeFunctionContainerAssign, .newLine(indentLevel: 2)])
-            for (fixedKey, _) in collection.swiftToOriginalJSONKeyMapping {
+            for (fixedKey, _) in collection.sortedSwiftKeyMappings {
                 strings.append(contentsOf: [.newLine(indentLevel: 2), .encodeFunctionStatement(propertyName: fixedKey)])
             }
             
@@ -121,6 +121,18 @@ extension JSONToSwift {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.propertyComment(name: "Array"))
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
+        }
+        if collection.objectArrayItems.isNotEmpty {
+            strings.append(.newLine(indentLevel: 1))
+            strings.append(.propertyComment(name: "Object Array"))
+            collection.objectArrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
+            strings.append(.newLine(indentLevel: 1))
+        }
+        if collection.hashArrayItems.isNotEmpty {
+            strings.append(.newLine(indentLevel: 1))
+            strings.append(.propertyComment(name: "Hash Array"))
+            collection.hashArrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 1))
         }
         if collection.objectItems.isNotEmpty {
@@ -170,8 +182,8 @@ extension JSONToSwift {
             collection.arrayItemInitStrings.forEach({ appendPropertyAssignment(string: $0, stringsCollection: &strings) })
             strings.append(.newLine(indentLevel: 2))
         }
-        if collection.objectArrayInitStrings.isNotEmpty {
-            collection.objectArrayInitStrings.forEach({
+        if collection.objectArrayItemInitStrings.isNotEmpty {
+            collection.objectArrayItemInitStrings.forEach({
                 appendPropertyAssignment(string: $0, stringsCollection: &strings)
                 strings.append(.newLine(indentLevel: 2))
             })

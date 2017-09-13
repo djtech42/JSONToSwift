@@ -14,6 +14,9 @@ struct JSONCollection {
         return contents.sorted(by: { $0.key < $1.key })
     }
     var swiftToOriginalJSONKeyMapping: [String : String] = [:]
+    var sortedSwiftKeyMappings: [(key: String, value: String)] {
+        return swiftToOriginalJSONKeyMapping.sorted(by: { $0.key < $1.key })
+    }
     var containsABadKey: Bool = false
     
     init(with key: String, element: Any) {
@@ -125,8 +128,6 @@ extension JSONCollection {
         allArrayPropertyStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Bool]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Double]") }
         allArrayPropertyStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String]") }
-        allArrayPropertyStrings += objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]") }
-        allArrayPropertyStrings += hashArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[String : Any]") }
         allArrayPropertyStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.propertyString(name: $0.key, withType: "[Any]") }
         
         return allArrayPropertyStrings
@@ -144,7 +145,15 @@ extension JSONCollection {
         return arrayInitStrings
     }
     
-    var objectArrayInitStrings: [String] {
+    var hashArrayItemPropertyStrings: [String] {
+        return hashArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[[String : Any]]") }
+    }
+    
+    var objectArrayItemPropertyStrings: [String] {
+        return objectArrayItems.map { SwiftLanguage.propertyString(name: $0.key, withType: "[\($0.key.madeSingleFromPlural.formattedForSwiftTypeName)]") }
+    }
+    
+    var objectArrayItemInitStrings: [String] {
         return objectArrayItems.map { "let \($0.key.madeSingleFromPlural)ObjectArray = dictionary[\"\($0.key)\"] as? [[String : Any]] ?? [[:]]\n\t\tself.\($0.key) = \($0.key.madeSingleFromPlural)ObjectArray.flatMap(\($0.key.madeSingleFromPlural.formattedForSwiftTypeName).init)" }
     }
     
