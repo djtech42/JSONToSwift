@@ -117,7 +117,7 @@ extension JSONToSwift {
     }
     
     fileprivate func addPropertyStrings(in strings: inout [FileTextBlock], from collection: JSONCollection) {
-        if collection.arrayItems.isNotEmpty {
+        if collection.otherArrayItems.isNotEmpty {
             strings.append(.newLine(indentLevel: 1))
             strings.append(.propertyComment(name: "Array"))
             collection.arrayItemPropertyStrings.forEach({ appendProperty(string: $0, stringsCollection: &strings) })

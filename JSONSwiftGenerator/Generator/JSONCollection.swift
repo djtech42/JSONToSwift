@@ -83,6 +83,10 @@ extension JSONCollection {
         return sortedContents.filter { $0.value is [Any] }
     }
     
+    var otherArrayItems: [(key: String, value: Any)] {
+        return arrayItems.filter { array in !objectArrayItems.contains(where: { array.key == $0.key }) && !hashArrayItems.contains(where: { array.key == $0.key }) }
+    }
+    
     var objectArrayItems: [(key: String, value: Any)] {
         return sortedContents.filter {
             guard let array = $0.value as? [Object] else { return false }
@@ -139,7 +143,7 @@ extension JSONCollection {
         arrayInitStrings += arrayItems.filter({ !($0.value is [Double]) }).filter { $0.value is [Bool] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[Bool]", defaultValueString: "[]") }
         arrayInitStrings += arrayItems.filter { $0.value is [Double] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[Double]", defaultValueString: "[]") }
         arrayInitStrings += arrayItems.filter { $0.value is [String] }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[String]", defaultValueString: "[]") }
-        arrayInitStrings += hashArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[String : Any]", defaultValueString: "[:]") }
+        arrayInitStrings += hashArrayItems.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[[String : Any]]", defaultValueString: "[]") }
         arrayInitStrings += arrayItems.filter { !($0.value is [String]) && !($0.value is [Double]) && !($0.value is [Bool]) && !($0.value is [Object]) }.map { SwiftLanguage.initializerWithDefaultValueCast(name: $0.key, dictionaryName: swiftToOriginalJSONKeyMapping[$0.key]!, toType: "[Any]", defaultValueString: "[]") }
         
         return arrayInitStrings
