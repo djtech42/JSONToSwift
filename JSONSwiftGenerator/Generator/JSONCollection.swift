@@ -10,12 +10,16 @@ import Foundation
 
 struct JSONCollection {
     fileprivate var contents: Object = [:]
-    var swiftToOriginalJSONKeyMapping: [String : String] = [:]
-    var containsABadKey: Bool {
-        return swiftToOriginalJSONKeyMapping.isNotEmpty
+    fileprivate var sortedContents: [(key: String, value: Any)] {
+        return contents.sorted(by: { $0.key < $1.key })
     }
+    var swiftToOriginalJSONKeyMapping: [String : String] = [:]
+    var containsABadKey: Bool = false
     
     init(with key: String, element: Any) {
+        if !key.isFormattedForSwiftPropertyName {
+            containsABadKey = true
+        }
         let fixedKey = key.formattedForSwiftPropertyName
         swiftToOriginalJSONKeyMapping[fixedKey] = key
         
@@ -24,6 +28,9 @@ struct JSONCollection {
     
     init<S: Sequence>(_ sequence: S) where S.Iterator.Element == (key: String, value: Any) {
         for (key, value) in sequence {
+            if !key.isFormattedForSwiftPropertyName {
+                containsABadKey = true
+            }
             let fixedKey = key.formattedForSwiftPropertyName
             swiftToOriginalJSONKeyMapping[fixedKey] = key
             
@@ -66,15 +73,15 @@ extension JSONCollection: ExpressibleByDictionaryLiteral {
 
 extension JSONCollection {
     var equatableItems: [(key: String, value: Any)] {
-        return contents.filter { $0.value is Object || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] || $0.value is [Object] }
+        return sortedContents.filter { $0.value is Object || $0.value is String || $0.value is Double || $0.value is Bool || $0.value is [Bool] || $0.value is [String] || $0.value is [Double] || $0.value is [Object] }
     }
     
     var arrayItems: [(key: String, value: Any)] {
-        return contents.filter { $0.value is [Any] }
+        return sortedContents.filter { $0.value is [Any] }
     }
     
     var objectArrayItems: [(key: String, value: Any)] {
-        return contents.filter {
+        return sortedContents.filter {
             guard let array = $0.value as? [Object] else { return false }
             
             return array.jsonCollectionType == .objectArray
@@ -82,7 +89,7 @@ extension JSONCollection {
     }
     
     var hashArrayItems: [(key: String, value: Any)] {
-        return contents.filter {
+        return sortedContents.filter {
             guard let array = $0.value as? [Hash] else { return false }
             
             return array.jsonCollectionType == .hashArray
@@ -90,24 +97,24 @@ extension JSONCollection {
     }
     
     var objectItems: [(key: String, value: Any)] {
-        return contents.filter { $0.value is Object }
+        return sortedContents.filter { $0.value is Object }
     }
     
     var stringItems: [(key: String, value: Any)] {
-        return contents.filter { $0.value is String }
+        return sortedContents.filter { $0.value is String }
     }
     
     var numberItems: [(key: String, value: Any)] {
-        return contents.filter { $0.value is Double }
+        return sortedContents.filter { $0.value is Double }
     }
     
     var boolItems: [(key: String, value: Any)] {
-        let mutableCopy = contents.filter({ !($0.value is Double) })
+        let mutableCopy = sortedContents.filter({ !($0.value is Double) })
         return mutableCopy.filter { $0.value is Bool }
     }
     
     var nullItems: [(key: String, value: Any)] {
-        return contents.filter { !($0.value is [Any]) && !($0.value is Object) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
+        return sortedContents.filter { !($0.value is [Any]) && !($0.value is Object) && !($0.value is String) && !($0.value is Double) && !($0.value is Bool) }
     }
 }
 
