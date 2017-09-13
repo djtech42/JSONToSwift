@@ -158,7 +158,7 @@ extension JSONCollection {
     }
     
     var objectArrayItemInitStrings: [String] {
-        return objectArrayItems.map { "let \($0.key.madeSingleFromPlural)ObjectArray = dictionary[\"\($0.key)\"] as? [[String : Any]] ?? [[:]]\n\t\tself.\($0.key) = \($0.key.madeSingleFromPlural)ObjectArray.flatMap(\($0.key.madeSingleFromPlural.formattedForSwiftTypeName).init)" }
+        return objectArrayItems.map { "let \($0.key.madeSingleFromPlural)ObjectArray = dictionary[\"\($0.key)\"] as? [[String : Any]] ?? []\n\t\tself.\($0.key) = \($0.key.madeSingleFromPlural)ObjectArray.flatMap(\($0.key.madeSingleFromPlural.formattedForSwiftTypeName).init)" }
     }
     
     var objectArrayItemStructNames: [String] {
