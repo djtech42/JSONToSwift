@@ -32,9 +32,7 @@ enum LaunchRouter {
                 objectName = filename.removingOccurrences(of: ".json").formattedForSwiftTypeName
             }
             else {
-                if verbose {
-                    print("verbose: automatic root object name retrieval failed")
-                }
+                print("automatic root object name retrieval failed")
                 objectName = Input.getNameForObject()
             }
         }
